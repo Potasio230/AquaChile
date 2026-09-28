@@ -1,0 +1,364 @@
+/* ==========================================================================
+   AquaChile - Automatización del Proceso de Evaluación Psicolaboral
+   Estilo Minimalista Corporativo (Inspirado en AquaChile.com)
+   ========================================================================== */
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: 'PT Sans', sans-serif;
+  background-color: #F8FAFC;
+  color: #003366;
+  line-height: 1.6;
+}
+
+/* ==========================================================================
+   Barra de Navegación (Más clara para resaltar el logo de AquaChile)
+   ========================================================================== */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background-color: rgba(255, 255, 255, 0.2) !important;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(0, 51, 102, 0.08);
+  padding: 0.6rem 2rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  transition: transform 0.4s ease;
+}
+
+.navbar.hide {
+  transform: translateY(-100%);
+}
+
+.navbar-brand {
+  display: flex;
+  align-items: center;
+}
+
+.logo {
+  width: 175px;
+  height: auto;
+}
+
+.navbar-nav {
+  gap: 1.25rem;
+}
+
+.navbar-nav .nav-link {
+  color: #003366 !important;
+  font-weight: 700;
+  font-size: 1rem;
+  padding: 0.5rem 0.75rem !important;
+  transition: color 0.2s ease;
+}
+
+.navbar-nav .nav-link:hover {
+  color: #F28C28 !important;
+}
+
+.navbar-toggler {
+  border: 1px solid rgba(0, 51, 102, 0.3);
+}
+
+.navbar-toggler:focus {
+  box-shadow: 0 0 0 0.2rem rgba(0, 51, 102, 0.15);
+}
+
+/* ==========================================================================
+   Hero Section con Video de Fondo (Pantalla Completa 100vh)
+   ========================================================================== */
+.hero {
+  position: relative;
+  min-height: 100vh;
+  padding-top: 100px;
+  color: #FFFFFF;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+  overflow: hidden;
+  background-color: #001e40; /* Color de respaldo mientras carga */
+}
+
+/* Video de fondo a pantalla completa */
+.hero-video {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  min-width: 100%;
+  min-height: 100%;
+  width: auto;
+  height: auto;
+  transform: translate(-50%, -50%);
+  object-fit: cover;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 3;
+  max-width: 850px;
+}
+
+.hero h1 {
+  font-size: clamp(2.3rem, 5vw, 3.8rem);
+  font-weight: 700;
+  margin-bottom: 1.25rem;
+  letter-spacing: -0.5px;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.7);
+}
+
+.hero p {
+  font-size: clamp(1.15rem, 2.2vw, 1.45rem);
+  margin-bottom: 0;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.65);
+}
+
+/* Indicador sutil de desplazamiento hacia abajo */
+.scroll-indicator {
+  position: absolute;
+  bottom: 2.2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  animation: bounce 2.2s infinite;
+  z-index: 3;
+}
+
+.scroll-indicator a {
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(4px);
+  text-decoration: none;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.scroll-indicator a:hover {
+  background: rgba(0, 0, 0, 0.45);
+  transform: scale(1.08);
+}
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateX(-50%) translateY(0);
+  }
+  40% {
+    transform: translateX(-50%) translateY(8px);
+  }
+  60% {
+    transform: translateX(-50%) translateY(4px);
+  }
+}
+
+/* ==========================================================================
+   Sección Salmón (FondoSalmón con Blur + Salmón a la izquierda + Texto a la derecha)
+   ========================================================================== */
+.salmon-section {
+  position: relative;
+  padding: 6.5rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #FFFFFF;
+  overflow: hidden;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+/* Capa de fondo desenfocada */
+.salmon-section::before {
+  content: "";
+  position: absolute;
+  top: -12px;
+  left: -12px;
+  right: -12px;
+  bottom: -12px;
+  background: 
+    linear-gradient(90deg, rgba(0, 20, 50, 0.25) 0%, rgba(0, 35, 75, 0.6) 100%),
+    url('assets/FondoSalmón.jpg') no-repeat center center / cover;
+  filter: blur(2px); /* <--- Aumenta o disminuye para más o menos desenfoque (ej: 4px, 6px, 10px) */
+  transform: scale(1.05); /* Evita bordes blancos causados por el desenfoque */
+  z-index: 1;
+}
+
+.salmon-container {
+  position: relative;
+  z-index: 2;
+  max-width: 1350px; /* <--- Ancho máximo del contenedor */
+  width: 100%;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 3.5rem;
+}
+
+.salmon-image-wrapper {
+  flex: 1;
+  display: flex;
+  justify-content: flex-start; /* <--- Alineado bien hacia la izquierda */
+  align-items: center;
+}
+
+.salmon-img {
+  max-width: 100%;
+  width: 700px; /* <--- TAMAÑO DEL SALMÓN (aumenta o reduce este valor) */
+  height: auto;
+  object-fit: contain;
+  transform: translateX(-40px); /* <--- POSICIÓN: negativo para mover a la izquierda */
+  /* Sombra leve proyectada hacia abajo (X: 0, Y: 22px, Desenfoque: 25px, Color) */
+  filter: drop-shadow(0 22px 25px rgba(0, 15, 35, 0.7));
+  transition: transform 0.35s cubic-bezier(0.25, 0.8, 0.25, 1), filter 0.35s ease;
+  cursor: pointer;
+}
+
+.salmon-img:hover {
+  /* Al pasar el mouse: se hace más grande (scale) manteniendo su posición */
+  transform: translateX(-40px) scale(1.08);
+  /* Sombra más profunda para dar sensación de relieve */
+  filter: drop-shadow(0 32px 35px rgba(0, 15, 35, 0.85));
+}
+
+.salmon-text-wrapper {
+  flex: 1.25;
+}
+
+.salmon-text {
+  font-size: 1.25rem;
+  line-height: 1.85;
+  color: #FFFFFF;
+  font-weight: 500;
+  margin: 0;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.75);
+}
+
+/* ==========================================================================
+   Sección del Formulario
+   ========================================================================== */
+.form-section {
+  background-color: #FFFFFF;
+  padding: 6.5rem 1.5rem;
+  text-align: center;
+  border-bottom: 1px solid #E2E8F0;
+}
+
+.form-container {
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.form-container h2 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #003366;
+  margin-bottom: 0.85rem;
+}
+
+.form-container p {
+  font-size: 1.1rem;
+  color: #556B82;
+  margin-bottom: 2.5rem;
+}
+
+/* Botón con color estático (sin iluminaciones) */
+.btn-form {
+  display: inline-block;
+  background-color: #F28C28;
+  color: #FFFFFF !important;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 1.05rem;
+  padding: 0.95rem 2.4rem;
+  border-radius: 6px;
+  border: none;
+  transition: background-color 0.2s ease;
+}
+
+.btn-form:hover {
+  background-color: #D96F00;
+  color: #FFFFFF !important;
+}
+
+/* ==========================================================================
+   Pie de Página (Footer)
+   ========================================================================== */
+footer {
+  background-color: #002244;
+  color: #A0B2C6;
+  padding: 2.5rem 1.5rem;
+  text-align: center;
+}
+
+footer p {
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+/* ==========================================================================
+   Responsividad Móvil
+   ========================================================================== */
+@media (max-width: 991.98px) {
+  .navbar-collapse {
+    background: #FFFFFF;
+    padding: 1.25rem;
+    border-radius: 8px;
+    margin-top: 0.5rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  }
+
+  .salmon-container {
+    flex-direction: column;
+    text-align: center;
+    gap: 2.5rem;
+  }
+
+  .salmon-img {
+    max-width: 85%;
+    width: 360px;
+    transform: translateX(0);
+  }
+}
+
+@media (max-width: 576px) {
+  .navbar {
+    padding: 0.5rem 1rem;
+  }
+
+  .hero {
+    min-height: 100vh;
+    padding-top: 80px;
+  }
+
+  .salmon-section {
+    padding: 4.5rem 1.25rem;
+  }
+
+  .salmon-text {
+    font-size: 1.1rem;
+    line-height: 1.7;
+  }
+
+  .form-section {
+    padding: 4.5rem 1rem;
+  }
+
+  .btn-form {
+    width: 100%;
+    padding: 0.85rem 1rem;
+  }
+}
