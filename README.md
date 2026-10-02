@@ -22,8 +22,30 @@ Estas etapas podrán modificarse o ampliarse durante el desarrollo del proyecto.
 
 ## Tecnologías y herramientas
 
+- React
+- Vite
+- CSS responsivo
+- API REST configurable
+
+## Ejecución local
+
+```bash
+npm install
+npm run dev
+```
+
+Mientras no exista un backend, las solicitudes de prueba se guardan solamente en el navegador. Para conectar la aplicación con la API, copia `.env.example` como `.env` y configura `VITE_API_URL`.
+
 
 ## Estructura del proyecto
+
+```text
+src/
+├── App.jsx       # Página y formulario de evaluación
+├── main.jsx      # Inicio de React
+└── styles.css    # Diseño responsivo
+assets/           # Logo, video e imágenes
+```
 
 
 ## Estado del proyecto
