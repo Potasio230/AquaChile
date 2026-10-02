@@ -50,21 +50,21 @@ function App() {
     Object.entries(form).forEach(([key, value]) => value !== null && payload.append(key, value))
 
     try {
-      const apiUrl = import.meta.env.VITE_API_URL
-      if (apiUrl) {
-        const response = await fetch(apiUrl, { method: 'POST', body: payload })
-        if (!response.ok) throw new Error('La API rechazó la solicitud')
-        setStatus({ type: 'success', message: 'Solicitud enviada correctamente.' })
-      } else {
-        const record = { ...form, cv: form.cv?.name ?? '', fechaRegistro: new Date().toISOString() }
-        const records = JSON.parse(localStorage.getItem('aquachile-solicitudes') ?? '[]')
-        localStorage.setItem('aquachile-solicitudes', JSON.stringify([...records, record]))
-        setStatus({ type: 'success', message: 'Prueba completada. Los datos se guardaron localmente en este navegador.' })
-      }
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000/api/evaluaciones'
+      const response = await fetch(apiUrl, { method: 'POST', body: payload })
+      const result = await response.json().catch(() => ({}))
+      if (!response.ok) throw new Error(result.error || 'La API rechazó la solicitud')
+      setStatus({
+        type: 'success',
+        message: `${result.mensaje} Código: ${result.solicitud.id.slice(0, 8)}.`,
+      })
       setForm(initialForm)
       event.currentTarget.reset()
     } catch (error) {
-      setStatus({ type: 'error', message: `No fue posible enviar la solicitud: ${error.message}` })
+      const connectionMessage = error instanceof TypeError
+        ? 'No se pudo conectar con el servidor. Ejecuta “npm run dev:all” e inténtalo nuevamente.'
+        : error.message
+      setStatus({ type: 'error', message: `No fue posible enviar la solicitud: ${connectionMessage}` })
     }
   }
 

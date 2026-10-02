@@ -25,16 +25,29 @@ Estas etapas podrán modificarse o ampliarse durante el desarrollo del proyecto.
 - React
 - Vite
 - CSS responsivo
-- API REST configurable
+- API REST con Express
+- Carga de archivos con Multer
+- Almacenamiento local en JSON
 
 ## Ejecución local
 
 ```bash
 npm install
-npm run dev
+npm run dev:all
 ```
 
-Mientras no exista un backend, las solicitudes de prueba se guardan solamente en el navegador. Para conectar la aplicación con la API, copia `.env.example` como `.env` y configura `VITE_API_URL`.
+Este comando inicia el frontend en `http://localhost:5173` y la API en `http://localhost:3000`. Al enviar el formulario, la API crea una carpeta segura en `server/solicitudes/` con `datos.json` y el currículum adjunto.
+
+También se pueden ejecutar por separado:
+
+```bash
+npm run dev       # Solo frontend
+npm run server    # Solo backend
+npm test          # Pruebas automatizadas
+npm run build     # Compilación de producción
+```
+
+Para utilizar otra API, copia `.env.example` como `.env` y cambia `VITE_API_URL`.
 
 
 ## Estructura del proyecto
@@ -44,6 +57,12 @@ src/
 ├── App.jsx       # Página y formulario de evaluación
 ├── main.jsx      # Inicio de React
 └── styles.css    # Diseño responsivo
+server/
+├── app.js        # API, validación y almacenamiento
+├── index.js      # Inicio del servidor
+└── solicitudes/  # Datos generados localmente (ignorados por Git)
+test/
+└── api.test.js   # Pruebas de integración
 assets/           # Logo, video e imágenes
 ```
 

@@ -2,3 +2,5 @@ node_modules/
 dist/
 .env
 .DS_Store
+server/solicitudes/*
+!server/solicitudes/.gitkeep
