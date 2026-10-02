@@ -263,16 +263,24 @@ body {
 }
 
 .form-container h2 {
-  font-size: 2rem;
+  font-size: 2.2rem;
   font-weight: 700;
   color: #003366;
-  margin-bottom: 0.85rem;
+  margin-bottom: 0.4rem;
+  letter-spacing: -0.5px;
 }
 
-.form-container p {
-  font-size: 1.1rem;
+.form-subtitle {
+  font-size: 1.18rem;
+  color: #009688;
+  font-weight: 700;
+  margin-bottom: 1.75rem;
+}
+
+.form-desc {
+  font-size: 1.05rem;
   color: #556B82;
-  margin-bottom: 2.5rem;
+  margin-bottom: 2.2rem;
 }
 
 /* Botón con color estático (sin iluminaciones) */
