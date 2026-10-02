@@ -68,7 +68,7 @@ legend span { display: inline-grid; place-items: center; width: 32px; height: 32
 footer { min-height: 145px; display: flex; align-items: center; justify-content: space-between; gap: 30px; padding: 32px clamp(24px,7vw,110px); background: #073f46; color: rgba(255,255,255,.72); }
 footer img { width: 145px; filter: brightness(0) invert(1); }
 
-.internal-header { position: sticky; top: 0; z-index: 20; min-height: 76px; display: flex; align-items: center; justify-content: space-between; padding: 14px clamp(24px,6vw,90px); background: #073f46; color: white; box-shadow: 0 4px 18px rgba(0,0,0,.12); }
+.internal-header { position: relative; z-index: 20; min-height: 76px; display: flex; align-items: center; justify-content: space-between; padding: 14px clamp(24px,6vw,90px); background: #073f46; color: white; box-shadow: 0 4px 18px rgba(0,0,0,.12); }
 .internal-header nav { display: flex; }
 .logout-button { border: 1px solid rgba(255,255,255,.45); border-radius: 999px; padding: 10px 17px; background: transparent; color: white; cursor: pointer; }
 .internal-nav-cta { border-radius: 999px; padding: 10px 17px; background: var(--orange); }
@@ -114,8 +114,14 @@ footer img { width: 145px; filter: brightness(0) invert(1); }
   .process-section,.form-grid { grid-template-columns: 1fr; }
   .salmon-visual { min-height: 340px; max-height: 480px; }
   .form-actions,footer { align-items: stretch; flex-direction: column; text-align: center; }
-  .internal-header { align-items: flex-start; gap: 14px; }
-  .internal-header nav { align-items: flex-end; flex-direction: column; gap: 8px; font-size: .9rem; }
+  .internal-header { min-height: 66px; align-items: center; padding: 10px 16px; }
+  .internal-header .brand { display: none; }
+  .internal-header nav { width: 100%; align-items: center; justify-content: space-between; flex-direction: row; gap: 7px; font-size: .8rem; }
+  .internal-header nav a,.internal-header .logout-button { padding: 8px 10px; white-space: nowrap; }
   .summary-grid,.dashboard-actions { grid-template-columns: 1fr; }
+}
+@media (max-width:520px) {
+  .internal-header nav a:first-child { display: none; }
+  .internal-form-title { font-size: 2.35rem; }
 }
 @media (prefers-reduced-motion:reduce) { html { scroll-behavior: auto; } .scroll-indicator { animation: none; } }
