@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import logo from '../assets/logo.png'
 import heroPoster from '../assets/Cultivos.jpg'
 import heroVideo from '../assets/BackgroundAquaChile.mp4'
@@ -27,7 +27,20 @@ function Field({ label, name, children, hint, ...props }) {
 function App() {
   const [form, setForm] = useState(initialForm)
   const [menuOpen, setMenuOpen] = useState(false)
+  const [navHidden, setNavHidden] = useState(false)
   const [status, setStatus] = useState({ type: 'idle', message: '' })
+
+  useEffect(() => {
+    let lastScrollTop = 0
+    const onScroll = () => {
+      const scrollTop = window.pageYOffset || document.documentElement.scrollTop
+      if (scrollTop > lastScrollTop && scrollTop > 100) setNavHidden(true)
+      else setNavHidden(false)
+      lastScrollTop = scrollTop <= 0 ? 0 : scrollTop
+    }
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
 
   const update = ({ target }) => {
     const value = target.type === 'file' ? target.files?.[0] ?? null : target.value
@@ -70,7 +83,7 @@ function App() {
 
   return (
     <>
-      <header className="site-header">
+      <header className={navHidden ? 'site-header hidden' : 'site-header'}>
         <a className="brand" href="#inicio" aria-label="Ir al inicio"><img src={logo} alt="AquaChile" /></a>
         <button className="menu-button" onClick={() => setMenuOpen((open) => !open)} aria-expanded={menuOpen} aria-label="Abrir menú"><span /><span /><span /></button>
         <nav className={menuOpen ? 'open' : ''} aria-label="Navegación principal">
@@ -83,12 +96,15 @@ function App() {
           <video autoPlay loop muted playsInline poster={heroPoster}><source src={heroVideo} type="video/mp4" /></video>
           <div className="hero-overlay" />
           <div className="hero-content">
-            <span className="eyebrow">Personas · Tecnología · Futuro</span>
             <h1>Evaluaciones más ágiles, decisiones más humanas.</h1>
             <p>Centralizamos la solicitud de evaluaciones psicolaborales para acompañar cada proceso con precisión, seguridad y cercanía.</p>
             <a className="primary-button" href="#formulario">Iniciar una solicitud</a>
           </div>
-          <a className="scroll-indicator" href="#proceso" aria-label="Continuar al contenido">⌄</a>
+          <a className="scroll-indicator" href="#proceso" aria-label="Continuar al contenido">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false">
+              <polyline points="6 9 12 15 18 9" />
+            </svg>
+          </a>
         </section>
 
         <section className="process-section" id="proceso">

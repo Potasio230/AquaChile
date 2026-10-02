@@ -1,120 +1,13 @@
 <!doctype html>
 <html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>AquaChile - Evaluación Psicolaboral</title>
-  <!-- Fuentes -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=PT+Sans:wght@400;700&display=swap" rel="stylesheet">
-  <!-- Bootstrap 5 CSS -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
-  <!-- Estilos Personalizados -->
-  <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-    
-  <!-- Barra de Navegación Transparente -->
-  <nav class="navbar navbar-expand-lg">
-    <div class="container-fluid">
-
-      <!-- LOGO -->
-      <a class="navbar-brand" href="#">
-        <img src="assets/logo.png" alt="AquaChile" class="logo">
-      </a>
-
-      <!-- Botón Hamburguesa para Móviles -->
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarAqua" aria-controls="navbarAqua" aria-expanded="false" aria-label="Abrir menú">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-
-      <!-- MENÚ -->
-      <div class="collapse navbar-collapse" id="navbarAqua">
-        <ul class="navbar-nav ms-auto">
-          <li class="nav-item"><a class="nav-link" href="dashboard.html">Dashboard</a></li>
-          <li class="nav-item"><a class="nav-link" href="candidato.html">Candidatos</a></li>
-          <li class="nav-item"><a class="nav-link" href="entrevista.html">Entrevistas</a></li>
-          <li class="nav-item"><a class="nav-link" href="informe.html">Informes</a></li>
-        </ul>
-      </div>
-    </div>
-  </nav>
-
-  <!-- Hero Section con Video de Fondo (BackgroundAquaChile.mp4, pantalla completa) -->
-  <header class="hero">
-    <video class="hero-video" autoplay loop muted playsinline poster="assets/Cultivos.jpg">
-      <source src="assets/BackgroundAquaChile.mp4" type="video/mp4">
-      Tu navegador no soporta videos HTML5.
-    </video>
-
-    <div class="hero-content">
-      <h1>Automatización Psicolaboral</h1>
-      <p>Optimiza tus procesos con IA integrada</p>
-    </div>
-
-    <!-- Indicador para bajar con el mouse -->
-    <div class="scroll-indicator">
-      <a href="#compromiso" aria-label="Bajar a la siguiente sección">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <polyline points="6 9 12 15 18 9"></polyline>
-        </svg>
-      </a>
-    </div>
-  </header>
-
-  <!-- Sección: Salmón & Compromiso AquaChile -->
-  <section id="compromiso" class="salmon-section">
-    <div class="salmon-container">
-      <div class="salmon-image-wrapper">
-        <img src="assets/Salmón.png" alt="Salmón AquaChile" class="salmon-img">
-      </div>
-      <div class="salmon-text-wrapper">
-        <p class="salmon-text">
-          En AquaChile impulsamos el talento de nuestra gente a través de procesos de selección modernos, ágiles y cercanos. Mediante la automatización inteligente, optimizamos cada etapa de la evaluación psicolaboral para conectar con las personas con mayor precisión, transparencia y la pasión por la excelencia que nos caracteriza.
-        </p>
-      </div>
-    </div>
-  </section>
-
-  <!-- Sección de Formulario (al bajar con el mouse) -->
-  <section id="formulario" class="form-section">
-    <div class="form-container">
-      <h2>¿Necesitas realizar una evaluación?</h2>
-      <p>Accede directamente al formulario oficial para iniciar el proceso de evaluación psicolaboral.</p>
-      <a href="https://forms.cloud.microsoft/r/BtdFRpaVhf?origin=lprLink" target="_blank" class="btn-form">
-        Haz clic acá para realizar el formulario
-      </a>
-    </div>
-  </section>
-
-  <!-- Pie de Página -->
-  <footer>
-    <p>© 2026 AquaChile - Proyecto Automatización Psicolaboral</p>
-  </footer>
-
-  <!-- Bootstrap 5 Bundle JS -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
-  <!-- Script para la transición de la barra de navegación al hacer scroll -->
-  <script>
-    let lastScrollTop = 0;
-    const navbar = document.querySelector('.navbar');
-
-    window.addEventListener('scroll', function () {
-      let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-
-      if (scrollTop > lastScrollTop && scrollTop > 100) {
-        // Al bajar más de 100px se oculta suavemente
-        navbar.classList.add('hide');
-      } else {
-        // Al subir reaparece
-        navbar.classList.remove('hide');
-      }
-
-      lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
-    });
-  </script>
-
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Portal de evaluación psicolaboral de AquaChile" />
+    <title>AquaChile | Evaluación Psicolaboral</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
 </html>
