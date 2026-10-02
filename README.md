@@ -41,9 +41,13 @@ Este comando inicia el frontend en `http://localhost:5173` y la API en `http://l
 ### Flujos disponibles
 
 - `#postulacion`: formulario público del candidato.
-- `#formulario-interno`: solicitud interna de evaluación psicolaboral.
+- `/login`: inicio de sesión interno de demostración.
+- `/dashboard`: panel privado del analista.
+- `/evaluacion`: solicitud interna de evaluación psicolaboral.
 - `POST /api/postulaciones`: recepción de postulaciones externas.
 - `POST /api/evaluaciones`: recepción de solicitudes internas.
+
+Acceso interno de demostración: `analista@aquachile.cl` / `Demo2026!`. Este acceso solo sirve para mostrar la navegación; debe sustituirse por autenticación respaldada por Oracle antes de utilizar el sistema con datos reales.
 
 También se pueden ejecutar por separado:
 

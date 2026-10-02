@@ -123,6 +123,116 @@ function ExternalApplicationForm() {
   )
 }
 
+function InternalHeader() {
+  const logout = () => {
+    sessionStorage.removeItem('aquachile-session')
+    window.location.assign('/login')
+  }
+  return (
+    <header className="internal-header">
+      <a className="brand" href="/"><img src={logo} alt="AquaChile" /></a>
+      <nav>
+        <a href="/dashboard">Dashboard</a>
+        <a href="/evaluacion">Nueva evaluación</a>
+        <button className="logout-button" type="button" onClick={logout}>Cerrar sesión</button>
+      </nav>
+    </header>
+  )
+}
+
+function LoginPage() {
+  const [credentials, setCredentials] = useState({ email: '', password: '' })
+  const [error, setError] = useState('')
+  const submit = (event) => {
+    event.preventDefault()
+    if (credentials.email === 'analista@aquachile.cl' && credentials.password === 'Demo2026!') {
+      sessionStorage.setItem('aquachile-session', JSON.stringify({ email: credentials.email, role: 'ANALISTA' }))
+      window.location.assign('/dashboard')
+      return
+    }
+    setError('Correo o contraseña incorrectos.')
+  }
+  return (
+    <main className="auth-page">
+      <a className="auth-brand" href="/"><img src={logo} alt="AquaChile" /></a>
+      <section className="login-card">
+        <span className="section-kicker">Acceso interno</span>
+        <h1>Portal de Reclutamiento</h1>
+        <p>Ingresa con tu cuenta de analista para revisar candidatos y gestionar evaluaciones.</p>
+        <form onSubmit={submit}>
+          <Field label="Correo institucional" name="email" type="email" value={credentials.email} onChange={({ target }) => setCredentials((current) => ({ ...current, email: target.value }))} required />
+          <Field label="Contraseña" name="password" type="password" value={credentials.password} onChange={({ target }) => setCredentials((current) => ({ ...current, password: target.value }))} required />
+          {error && <div className="form-status error" role="alert">{error}</div>}
+          <button className="submit-button" type="submit">Iniciar sesión</button>
+        </form>
+        <div className="demo-access"><b>Acceso de demostración</b><span>analista@aquachile.cl</span><span>Demo2026!</span></div>
+        <a className="back-link" href="/">← Volver al portal público</a>
+      </section>
+    </main>
+  )
+}
+
+function DashboardPage() {
+  return (
+    <>
+      <InternalHeader />
+      <main className="dashboard-page">
+        <div className="dashboard-heading"><span className="section-kicker">Área interna</span><h1>Dashboard de evaluaciones</h1><p>Bienvenido. Desde aquí puedes revisar el flujo de candidatos e iniciar nuevas evaluaciones.</p></div>
+        <section className="summary-grid">
+          <article><span>Postulaciones</span><strong>—</strong><small>Se conectará con Oracle</small></article>
+          <article><span>En evaluación</span><strong>—</strong><small>Se conectará con Oracle</small></article>
+          <article><span>Informes listos</span><strong>—</strong><small>Se conectará con Oracle</small></article>
+        </section>
+        <section className="dashboard-actions">
+          <a href="/evaluacion"><strong>Nueva evaluación</strong><span>Registrar una solicitud psicolaboral →</span></a>
+          <a href="/#postulacion"><strong>Ver formulario público</strong><span>Revisar la experiencia del candidato →</span></a>
+        </section>
+        <section className="empty-state"><h2>Candidatos recientes</h2><p>La lista aparecerá aquí cuando conectemos la base de datos Oracle.</p></section>
+      </main>
+    </>
+  )
+}
+
+function InternalEvaluationPage({ form, update, status, handleSubmit }) {
+  return (
+    <>
+      <InternalHeader />
+      <main className="internal-page">
+        <section className="form-section internal-section" id="formulario-interno">
+          <div className="form-heading">
+            <span className="section-kicker">Uso interno · Reclutamiento y Selección</span>
+            <h2>Evaluación psicolaboral</h2>
+            <p>Registra los antecedentes necesarios para iniciar la evaluación del candidato.</p>
+          </div>
+          <form onSubmit={handleSubmit} className="evaluation-form">
+            <fieldset><legend><span>1</span> Datos del candidato</legend><div className="form-grid">
+              <Field label="Nombre completo" name="nombre" value={form.nombre} onChange={update} required />
+              <Field label="RUT o identificador" name="identificador" value={form.identificador} onChange={update} required />
+              <Field label="Cargo al que postula" required><select name="cargo" value={form.cargo} onChange={update} required><option value="">Selecciona un cargo</option>{cargos.map((item) => <option key={item}>{item}</option>)}</select></Field>
+              <Field label="Instalación, planta o centro" required><select name="centroTrabajo" value={form.centroTrabajo} onChange={update} required><option value="">Selecciona una instalación</option>{instalaciones.map((item) => <option key={item}>{item}</option>)}</select></Field>
+              <Field label="Región" required><select name="localidad" value={form.localidad} onChange={update} required><option value="">Selecciona una región</option>{regiones.map((item) => <option key={item}>{item}</option>)}</select></Field>
+            </div></fieldset>
+            <fieldset><legend><span>2</span> Datos de la solicitud</legend><div className="form-grid">
+              <Field label="Nombre del analista" name="analista" value={form.analista} onChange={update} required />
+              <Field label="Correo del analista" name="correoAnalista" type="email" value={form.correoAnalista} onChange={update} required />
+              <Field label="Familia de cargo" required><select name="familiaCargo" value={form.familiaCargo} onChange={update} required><option value="">Selecciona una opción</option>{familias.map((item) => <option key={item}>{item}</option>)}</select></Field>
+              <Field label="Área" required><select name="area" value={form.area} onChange={update} required><option value="">Selecciona una opción</option>{areas.map((item) => <option key={item}>{item}</option>)}</select></Field>
+              <Field label="Sistema de turno" required><select name="turno" value={form.turno} onChange={update} required><option value="">Selecciona una opción</option>{turnos.map((item) => <option key={item}>{item}</option>)}</select></Field>
+              <Field label="Fecha requerida para el informe" name="fechaInforme" type="date" value={form.fechaInforme} onChange={update} required />
+            </div></fieldset>
+            <fieldset><legend><span>3</span> Antecedentes adicionales</legend><div className="form-grid">
+              <Field label="Observaciones" hint="No incluyas información sensible que no sea necesaria."><textarea name="observaciones" value={form.observaciones} onChange={update} rows="4" /></Field>
+              <Field label="Currículum del candidato" required hint="Formato PDF o Word. Máximo 10 MB."><input name="cv" type="file" accept=".pdf,.doc,.docx" onChange={update} required /></Field>
+            </div></fieldset>
+            {status.message && <div className={`form-status ${status.type}`} role="status">{status.message}</div>}
+            <div className="form-actions"><p><b>*</b> Campos obligatorios</p><button className="submit-button" type="submit" disabled={status.type === 'loading'}>{status.type === 'loading' ? 'Enviando…' : 'Crear evaluación'}</button></div>
+          </form>
+        </section>
+      </main>
+    </>
+  )
+}
+
 function App() {
   const [form, setForm] = useState(initialForm)
   const [menuOpen, setMenuOpen] = useState(false)
@@ -167,13 +277,21 @@ function App() {
     }
   }
 
+  const path = window.location.pathname
+  const isAuthenticated = Boolean(sessionStorage.getItem('aquachile-session'))
+  if (path === '/login') return isAuthenticated ? <DashboardPage /> : <LoginPage />
+  if (path === '/dashboard') return isAuthenticated ? <DashboardPage /> : <LoginPage />
+  if (path === '/evaluacion') return isAuthenticated
+    ? <InternalEvaluationPage form={form} update={update} status={status} handleSubmit={handleSubmit} />
+    : <LoginPage />
+
   return (
     <>
       <header className="site-header">
         <a className="brand" href="#inicio" aria-label="Ir al inicio"><img src={logo} alt="AquaChile" /></a>
         <button className="menu-button" onClick={() => setMenuOpen((open) => !open)} aria-expanded={menuOpen} aria-label="Abrir menú"><span /><span /><span /></button>
         <nav className={menuOpen ? 'open' : ''} aria-label="Navegación principal">
-          <a href="#inicio">Inicio</a><a href="#postulacion">Postular</a><a className="nav-cta" href="#formulario-interno">Acceso interno</a>
+          <a href="#inicio">Inicio</a><a href="#postulacion">Postular</a><a className="nav-cta" href="/login">Acceso interno</a>
         </nav>
       </header>
 
@@ -206,52 +324,6 @@ function App() {
 
         <ExternalApplicationForm />
 
-        <section className="form-section internal-section" id="formulario-interno">
-          <div className="form-heading">
-            <span className="section-kicker">Uso interno · Reclutamiento y Selección</span>
-            <h2>Evaluación psicolaboral</h2>
-            <p>Completa los campos obligatorios. Para las pruebas del proyecto, utiliza únicamente información ficticia.</p>
-          </div>
-
-          <form onSubmit={handleSubmit} className="evaluation-form">
-            <fieldset>
-              <legend><span>1</span> Datos del candidato</legend>
-              <div className="form-grid">
-                <Field label="Nombre completo" name="nombre" value={form.nombre} onChange={update} required />
-                <Field label="RUT o identificador" name="identificador" value={form.identificador} onChange={update} required />
-                <Field label="Cargo al que postula" required><select name="cargo" value={form.cargo} onChange={update} required><option value="">Selecciona un cargo</option>{cargos.map((item) => <option key={item}>{item}</option>)}</select></Field>
-                <Field label="Instalación, planta o centro" required><select name="centroTrabajo" value={form.centroTrabajo} onChange={update} required><option value="">Selecciona una instalación</option>{instalaciones.map((item) => <option key={item}>{item}</option>)}</select></Field>
-                <Field label="Región" required><select name="localidad" value={form.localidad} onChange={update} required><option value="">Selecciona una región</option>{regiones.map((item) => <option key={item}>{item}</option>)}</select></Field>
-              </div>
-            </fieldset>
-
-            <fieldset>
-              <legend><span>2</span> Datos de la solicitud</legend>
-              <div className="form-grid">
-                <Field label="Nombre del analista" name="analista" value={form.analista} onChange={update} required />
-                <Field label="Correo del analista" name="correoAnalista" type="email" value={form.correoAnalista} onChange={update} required />
-                <Field label="Familia de cargo" required><select name="familiaCargo" value={form.familiaCargo} onChange={update} required><option value="">Selecciona una opción</option>{familias.map((item) => <option key={item}>{item}</option>)}</select></Field>
-                <Field label="Área" required><select name="area" value={form.area} onChange={update} required><option value="">Selecciona una opción</option>{areas.map((item) => <option key={item}>{item}</option>)}</select></Field>
-                <Field label="Sistema de turno" required><select name="turno" value={form.turno} onChange={update} required><option value="">Selecciona una opción</option>{turnos.map((item) => <option key={item}>{item}</option>)}</select></Field>
-                <Field label="Fecha requerida para el informe" name="fechaInforme" type="date" value={form.fechaInforme} onChange={update} required />
-              </div>
-            </fieldset>
-
-            <fieldset>
-              <legend><span>3</span> Antecedentes adicionales</legend>
-              <div className="form-grid">
-                <Field label="Observaciones" hint="No incluyas información sensible que no sea necesaria."><textarea name="observaciones" value={form.observaciones} onChange={update} rows="4" /></Field>
-                <Field label="Currículum del candidato" required hint="Formato PDF o Word. Máximo 10 MB."><input name="cv" type="file" accept=".pdf,.doc,.docx" onChange={update} required /></Field>
-              </div>
-            </fieldset>
-
-            {status.message && <div className={`form-status ${status.type}`} role="status">{status.message}</div>}
-            <div className="form-actions">
-              <p><b>*</b> Campos obligatorios</p>
-              <button className="submit-button" type="submit" disabled={status.type === 'loading'}>{status.type === 'loading' ? 'Enviando…' : 'Enviar solicitud'}</button>
-            </div>
-          </form>
-        </section>
       </main>
 
       <footer><img src={logo} alt="AquaChile" /><p>Proyecto académico de automatización psicolaboral · 2026</p></footer>
