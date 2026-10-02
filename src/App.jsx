@@ -123,6 +123,32 @@ function ExternalApplicationForm() {
   )
 }
 
+function PublicHeader({ solid = false }) {
+  const [open, setOpen] = useState(false)
+  return (
+    <header className={`site-header ${solid ? 'solid-header' : ''}`}>
+      <a className="brand" href="/" aria-label="Ir al inicio"><img src={logo} alt="AquaChile" /></a>
+      <button className="menu-button" onClick={() => setOpen((current) => !current)} aria-expanded={open} aria-label="Abrir menú"><span /><span /><span /></button>
+      <nav className={open ? 'open' : ''} aria-label="Navegación principal">
+        <a href="/#quienes-somos">Quiénes somos</a>
+        <a href="/#oportunidades">Oportunidades</a>
+        <a href="/login">Acceso colaboradores</a>
+        <a className="nav-cta" href="/postulacion">Postula</a>
+      </nav>
+    </header>
+  )
+}
+
+function PublicApplicationPage() {
+  return (
+    <>
+      <PublicHeader solid />
+      <main className="application-page"><ExternalApplicationForm /></main>
+      <footer><img src={logo} alt="AquaChile" /><p>Prototipo académico · Portal de Reclutamiento y Selección · 2026</p></footer>
+    </>
+  )
+}
+
 function InternalHeader() {
   const logout = () => {
     sessionStorage.removeItem('aquachile-session')
@@ -284,6 +310,7 @@ function App() {
   if (path === '/evaluacion') return isAuthenticated
     ? <InternalEvaluationPage form={form} update={update} status={status} handleSubmit={handleSubmit} />
     : <LoginPage />
+  if (path === '/postulacion') return <PublicApplicationPage />
 
   return (
     <>
@@ -291,7 +318,7 @@ function App() {
         <a className="brand" href="#inicio" aria-label="Ir al inicio"><img src={logo} alt="AquaChile" /></a>
         <button className="menu-button" onClick={() => setMenuOpen((open) => !open)} aria-expanded={menuOpen} aria-label="Abrir menú"><span /><span /><span /></button>
         <nav className={menuOpen ? 'open' : ''} aria-label="Navegación principal">
-          <a href="#inicio">Inicio</a><a href="#postulacion">Postular</a><a className="nav-cta" href="/login">Acceso interno</a>
+          <a href="#quienes-somos">Quiénes somos</a><a href="#oportunidades">Oportunidades</a><a href="/login">Acceso colaboradores</a><a className="nav-cta" href="/postulacion">Postula</a>
         </nav>
       </header>
 
@@ -300,33 +327,41 @@ function App() {
           <video autoPlay loop muted playsInline poster={heroPoster}><source src={heroVideo} type="video/mp4" /></video>
           <div className="hero-overlay" />
           <div className="hero-content">
-            <span className="eyebrow">Personas · Tecnología · Futuro</span>
-            <h1>Evaluaciones más ágiles, decisiones más humanas.</h1>
-            <p>Centralizamos la solicitud de evaluaciones psicolaborales para acompañar cada proceso con precisión, seguridad y cercanía.</p>
-            <a className="primary-button" href="#postulacion">Postular ahora</a>
+            <span className="eyebrow">Talento desde el sur de Chile</span>
+            <h1>Crece junto a una industria que mira al futuro.</h1>
+            <p>Conecta tu talento con oportunidades en una compañía que une personas, innovación y compromiso con el entorno.</p>
+            <div className="hero-actions"><a className="primary-button" href="/postulacion">Postula con nosotros</a><a className="secondary-button" href="#quienes-somos">Conoce el proceso</a></div>
           </div>
           <a className="scroll-indicator" href="#proceso" aria-label="Continuar al contenido">⌄</a>
         </section>
 
-        <section className="process-section" id="proceso">
+        <section className="process-section" id="quienes-somos">
           <div className="salmon-visual"><img src={salmon} alt="Salmón AquaChile" /></div>
           <div className="process-copy">
-            <span className="section-kicker">Un proceso conectado</span>
-            <h2>La información correcta, desde el primer paso.</h2>
-            <p>Esta solicitud reúne los antecedentes necesarios para preparar la evaluación y activar el flujo automatizado del equipo de Reclutamiento y Selección.</p>
+            <span className="section-kicker">Personas que transforman</span>
+            <h2>Oportunidades que nacen en el sur.</h2>
+            <p>Este prototipo acerca a las personas a nuevas oportunidades y ayuda al equipo de Reclutamiento y Selección a acompañar cada postulación de manera ágil y cercana.</p>
             <div className="steps">
-              <div><strong>01</strong><span>Completa los antecedentes</span></div>
-              <div><strong>02</strong><span>Adjunta el currículum</span></div>
-              <div><strong>03</strong><span>Envía la solicitud</span></div>
+              <div><strong>01</strong><span>Conoce nuestras áreas</span></div>
+              <div><strong>02</strong><span>Comparte tu experiencia</span></div>
+              <div><strong>03</strong><span>Avanza en el proceso</span></div>
             </div>
           </div>
         </section>
 
-        <ExternalApplicationForm />
+        <section className="career-section" id="oportunidades">
+          <div className="career-heading"><span className="section-kicker">Dónde puedes aportar</span><h2>Distintas áreas, un mismo propósito.</h2><p>Encuentra un espacio para desarrollar tu talento en los distintos puntos de nuestra operación.</p></div>
+          <div className="career-grid">
+            <article><span>01</span><h3>Operaciones</h3><p>Plantas de proceso, centros de cultivo y pisciculturas.</p></article>
+            <article><span>02</span><h3>Áreas técnicas</h3><p>Mantención, calidad, prevención y soporte especializado.</p></article>
+            <article><span>03</span><h3>Áreas profesionales</h3><p>Logística, administración, personas y gestión.</p></article>
+          </div>
+          <div className="career-cta"><div><span className="section-kicker">Tu próximo desafío</span><h2>Queremos conocer tu historia.</h2></div><a className="primary-button" href="/postulacion">Comenzar postulación</a></div>
+        </section>
 
       </main>
 
-      <footer><img src={logo} alt="AquaChile" /><p>Proyecto académico de automatización psicolaboral · 2026</p></footer>
+      <footer><img src={logo} alt="AquaChile" /><p>Prototipo académico · Portal de Reclutamiento y Selección · 2026</p></footer>
     </>
   )
 }
