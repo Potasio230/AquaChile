@@ -42,7 +42,7 @@ Este comando inicia el frontend en `http://localhost:5173` y la API en `http://l
 
 - `#postulacion`: formulario público del candidato.
 - `/login`: inicio de sesión interno de demostración.
-- `/dashboard`: panel privado del analista.
+- `/dashboard`: panel principal privado del analista.
 - `/evaluacion`: solicitud interna de evaluación psicolaboral.
 - `POST /api/postulaciones`: recepción de postulaciones externas.
 - `POST /api/evaluaciones`: recepción de solicitudes internas.

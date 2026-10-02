@@ -132,8 +132,8 @@ function InternalHeader() {
     <header className="internal-header">
       <a className="brand" href="/"><img src={logo} alt="AquaChile" /></a>
       <nav>
-        <a href="/dashboard">Dashboard</a>
-        <a href="/evaluacion">Nueva evaluación</a>
+        <a href="/dashboard">Panel principal</a>
+        <a className="internal-nav-cta" href="/evaluacion">Evaluación psicolaboral</a>
         <button className="logout-button" type="button" onClick={logout}>Cerrar sesión</button>
       </nav>
     </header>
@@ -177,14 +177,14 @@ function DashboardPage() {
     <>
       <InternalHeader />
       <main className="dashboard-page">
-        <div className="dashboard-heading"><span className="section-kicker">Área interna</span><h1>Dashboard de evaluaciones</h1><p>Bienvenido. Desde aquí puedes revisar el flujo de candidatos e iniciar nuevas evaluaciones.</p></div>
+        <div className="dashboard-heading"><span className="section-kicker">Área interna</span><h1>Panel de Reclutamiento y Selección</h1><p>Revisa el flujo de candidatos y administra sus evaluaciones psicolaborales.</p><a className="primary-button panel-primary-action" href="/evaluacion">Crear evaluación psicolaboral</a></div>
         <section className="summary-grid">
           <article><span>Postulaciones</span><strong>—</strong><small>Se conectará con Oracle</small></article>
           <article><span>En evaluación</span><strong>—</strong><small>Se conectará con Oracle</small></article>
           <article><span>Informes listos</span><strong>—</strong><small>Se conectará con Oracle</small></article>
         </section>
         <section className="dashboard-actions">
-          <a href="/evaluacion"><strong>Nueva evaluación</strong><span>Registrar una solicitud psicolaboral →</span></a>
+          <a href="/evaluacion"><strong>Evaluación psicolaboral</strong><span>Registrar una nueva evaluación para un candidato →</span></a>
           <a href="/#postulacion"><strong>Ver formulario público</strong><span>Revisar la experiencia del candidato →</span></a>
         </section>
         <section className="empty-state"><h2>Candidatos recientes</h2><p>La lista aparecerá aquí cuando conectemos la base de datos Oracle.</p></section>
@@ -201,7 +201,7 @@ function InternalEvaluationPage({ form, update, status, handleSubmit }) {
         <section className="form-section internal-section" id="formulario-interno">
           <div className="form-heading">
             <span className="section-kicker">Uso interno · Reclutamiento y Selección</span>
-            <h2>Evaluación psicolaboral</h2>
+            <h1 className="internal-form-title">Nueva evaluación psicolaboral</h1>
             <p>Registra los antecedentes necesarios para iniciar la evaluación del candidato.</p>
           </div>
           <form onSubmit={handleSubmit} className="evaluation-form">
