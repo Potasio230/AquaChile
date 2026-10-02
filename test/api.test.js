@@ -61,3 +61,23 @@ test('rechaza una solicitud incompleta', async () => {
     assert.match((await response.json()).error, /Faltan campos obligatorios/)
   })
 })
+
+test('recibe una postulación externa con consentimiento', async () => {
+  await withServer(async ({ baseUrl, storageDir }) => {
+    const form = new FormData()
+    const fields = {
+      nombre: 'Alexis Mansilla', identificador: '22.222.222-2', correo: 'alexis@example.com',
+      telefono: '+56911111111', cargo: 'Técnico/a acuícola', centroTrabajo: 'Centro de cultivo',
+      localidad: 'Los Lagos', consentimiento: 'true',
+    }
+    Object.entries(fields).forEach(([key, value]) => form.append(key, value))
+    form.append('cv', new Blob(['CV externo'], { type: 'application/pdf' }), 'cv.pdf')
+
+    const response = await fetch(`${baseUrl}/api/postulaciones`, { method: 'POST', body: form })
+    assert.equal(response.status, 201)
+    const folders = await readdir(storageDir)
+    const record = JSON.parse(await readFile(path.join(storageDir, folders[0], 'datos.json'), 'utf8'))
+    assert.equal(record.tipo, 'postulacion_externa')
+    assert.equal(record.consentimiento, true)
+  })
+})

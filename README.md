@@ -36,7 +36,14 @@ npm install
 npm run dev:all
 ```
 
-Este comando inicia el frontend en `http://localhost:5173` y la API en `http://localhost:3000`. Al enviar el formulario, la API crea una carpeta segura en `server/solicitudes/` con `datos.json` y el currículum adjunto.
+Este comando inicia el frontend en `http://localhost:5173` y la API en `http://localhost:3000`. La página incluye un formulario externo para candidatos y otro formulario interno para analistas. Al enviar cualquiera de ellos, la API crea una carpeta segura en `server/solicitudes/` con `datos.json` y el currículum adjunto.
+
+### Flujos disponibles
+
+- `#postulacion`: formulario público del candidato.
+- `#formulario-interno`: solicitud interna de evaluación psicolaboral.
+- `POST /api/postulaciones`: recepción de postulaciones externas.
+- `POST /api/evaluaciones`: recepción de solicitudes internas.
 
 También se pueden ejecutar por separado:
 

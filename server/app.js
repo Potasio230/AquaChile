@@ -19,6 +19,9 @@ const requiredFields = [
   'nombre', 'identificador', 'cargo', 'centroTrabajo', 'localidad', 'analista',
   'correoAnalista', 'familiaCargo', 'area', 'turno', 'fechaInforme',
 ]
+const requiredApplicationFields = [
+  'nombre', 'identificador', 'correo', 'telefono', 'cargo', 'centroTrabajo', 'localidad',
+]
 
 const upload = multer({
   storage: multer.memoryStorage(),
@@ -70,6 +73,33 @@ function buildRecord(body, file, id) {
   }
 }
 
+function validateApplication(body, file) {
+  const missing = requiredApplicationFields.filter((field) => !cleanText(body[field]))
+  if (missing.length) return `Faltan campos obligatorios: ${missing.join(', ')}.`
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cleanText(body.correo))) return 'El correo del candidato no es válido.'
+  if (body.consentimiento !== 'true') return 'Debe aceptar el tratamiento de datos personales.'
+  if (!file) return 'Debe adjuntar el currículum del candidato.'
+  return null
+}
+
+function buildApplicationRecord(body, file, id) {
+  return {
+    id,
+    tipo: 'postulacion_externa',
+    nombre: cleanText(body.nombre),
+    identificador: cleanText(body.identificador),
+    correo: cleanText(body.correo),
+    telefono: cleanText(body.telefono, 30),
+    cargo: cleanText(body.cargo),
+    centroTrabajo: cleanText(body.centroTrabajo),
+    localidad: cleanText(body.localidad),
+    consentimiento: true,
+    cv: `cv${ALLOWED_MIME_TYPES.get(file.mimetype)}`,
+    fechaRegistro: new Date().toISOString(),
+    estado: 'postulacion_recibida',
+  }
+}
+
 export function createApp({ storageDir = process.env.STORAGE_DIR || DEFAULT_STORAGE } = {}) {
   const app = express()
   app.disable('x-powered-by')
@@ -98,6 +128,31 @@ export function createApp({ storageDir = process.env.STORAGE_DIR || DEFAULT_STOR
 
       return response.status(201).json({
         mensaje: 'Solicitud recibida correctamente.',
+        solicitud: { id, carpeta: folderName, estado: record.estado },
+      })
+    } catch (error) {
+      return next(error)
+    }
+  })
+
+  app.post('/api/postulaciones', upload.single('cv'), async (request, response, next) => {
+    try {
+      const validationError = validateApplication(request.body, request.file)
+      if (validationError) return response.status(400).json({ error: validationError })
+
+      const id = randomUUID()
+      const folderName = `postulacion-${safeSegment(request.body.nombre)}-${safeSegment(request.body.identificador)}-${id.slice(0, 8)}`
+      const candidateDir = path.join(storageDir, folderName)
+      const record = buildApplicationRecord(request.body, request.file, id)
+
+      await mkdir(candidateDir, { recursive: false })
+      await Promise.all([
+        writeFile(path.join(candidateDir, 'datos.json'), `${JSON.stringify(record, null, 2)}\n`, 'utf8'),
+        writeFile(path.join(candidateDir, record.cv), request.file.buffer),
+      ])
+
+      return response.status(201).json({
+        mensaje: 'Postulación recibida correctamente.',
         solicitud: { id, carpeta: folderName, estado: record.estado },
       })
     } catch (error) {

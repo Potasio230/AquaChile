@@ -39,6 +39,7 @@ h1 { margin: 18px 0 24px; font-size: clamp(3rem,6vw,5.7rem); line-height: .98; l
 .steps strong { color: var(--orange); font-family: 'Manrope'; }
 
 .form-section { padding: clamp(70px,9vw,130px) clamp(20px,7vw,110px); background: linear-gradient(180deg,#f1f7f5,#e8f1ef); }
+.internal-section { background: #f8fbfa; border-top: 1px solid #dbe8e5; }
 .form-heading { max-width: 820px; margin: 0 auto 38px; text-align: center; }
 .form-heading h2 { margin-inline: auto; }
 .form-heading p { color: #5d7478; line-height: 1.7; }
@@ -61,6 +62,8 @@ legend span { display: inline-grid; place-items: center; width: 32px; height: 32
 .form-status.loading { color: var(--dark); background: #e5f2f2; }
 .form-actions { display: flex; justify-content: space-between; align-items: center; gap: 20px; }
 .form-actions p { color: #718589; font-size: .9rem; }
+.consent-field { display: flex; align-items: flex-start; gap: 12px; margin: 0 0 24px; color: #486267; line-height: 1.55; }
+.consent-field input { width: 19px; height: 19px; margin-top: 2px; accent-color: var(--teal); flex: 0 0 auto; }
 .submit-button:disabled { opacity: .65; cursor: wait; }
 footer { min-height: 145px; display: flex; align-items: center; justify-content: space-between; gap: 30px; padding: 32px clamp(24px,7vw,110px); background: #073f46; color: rgba(255,255,255,.72); }
 footer img { width: 145px; filter: brightness(0) invert(1); }
