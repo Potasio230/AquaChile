@@ -13,6 +13,22 @@ const initialForm = {
 const familias = ['Operativo', 'Técnico', 'Profesional', 'Supervisión o jefatura', 'Administrativo']
 const areas = ['Centro de cultivo', 'Piscicultura', 'Planta de proceso', 'Mantención', 'Calidad', 'Logística', 'Administración', 'Otra']
 const turnos = ['Jornada ordinaria', 'Sistema de turnos', '7x7', '10x10', '14x14', 'Otro']
+const cargos = [
+  'Operario/a de planta', 'Técnico/a de mantención', 'Técnico/a acuícola',
+  'Asistente de centro de cultivo', 'Analista de calidad', 'Analista de laboratorio',
+  'Profesional de prevención de riesgos', 'Encargado/a de logística',
+  'Supervisor/a de producción', 'Jefe/a de turno', 'Cargo administrativo', 'Otro cargo',
+]
+const instalaciones = [
+  'Centro de cultivo', 'Piscicultura', 'Planta de proceso', 'Centro de distribución',
+  'Oficina administrativa', 'Otra instalación',
+]
+const regiones = [
+  'Arica y Parinacota', 'Tarapacá', 'Antofagasta', 'Atacama', 'Coquimbo',
+  'Valparaíso', 'Metropolitana de Santiago', "Libertador General Bernardo O’Higgins",
+  'Maule', 'Ñuble', 'Biobío', 'La Araucanía', 'Los Ríos', 'Los Lagos',
+  'Aysén del General Carlos Ibáñez del Campo', 'Magallanes y de la Antártica Chilena',
+]
 
 function Field({ label, name, children, hint, ...props }) {
   return (
@@ -118,9 +134,9 @@ function App() {
               <div className="form-grid">
                 <Field label="Nombre completo" name="nombre" value={form.nombre} onChange={update} required />
                 <Field label="RUT o identificador" name="identificador" value={form.identificador} onChange={update} required />
-                <Field label="Cargo al que postula" name="cargo" value={form.cargo} onChange={update} required />
-                <Field label="Instalación, planta o centro" name="centroTrabajo" value={form.centroTrabajo} onChange={update} required />
-                <Field label="Región o localidad" name="localidad" value={form.localidad} onChange={update} required />
+                <Field label="Cargo al que postula" required><select name="cargo" value={form.cargo} onChange={update} required><option value="">Selecciona un cargo</option>{cargos.map((item) => <option key={item}>{item}</option>)}</select></Field>
+                <Field label="Instalación, planta o centro" required><select name="centroTrabajo" value={form.centroTrabajo} onChange={update} required><option value="">Selecciona una instalación</option>{instalaciones.map((item) => <option key={item}>{item}</option>)}</select></Field>
+                <Field label="Región" required><select name="localidad" value={form.localidad} onChange={update} required><option value="">Selecciona una región</option>{regiones.map((item) => <option key={item}>{item}</option>)}</select></Field>
               </div>
             </fieldset>
 
