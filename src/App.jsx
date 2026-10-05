@@ -3,6 +3,7 @@ import logo from '../assets/logo.png'
 import heroPoster from '../assets/Cultivos.jpg'
 import heroVideo from '../assets/BackgroundAquaChile.mp4'
 import salmon from '../assets/Salmón.png'
+import ChatWidget from './components/ChatWidget'
 
 const initialForm = {
   nombre: '', identificador: '', cargo: '', centroTrabajo: '', localidad: '',
@@ -54,30 +55,54 @@ function App() {
       'application/msword',
       'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
     ]
-    if (form.cv && (!allowedTypes.includes(form.cv.type) || form.cv.size > 10 * 1024 * 1024)) {
+    if (form.cv && form.cv instanceof File && (!allowedTypes.includes(form.cv.type) || form.cv.size > 10 * 1024 * 1024)) {
       setStatus({ type: 'error', message: 'El currículum debe ser PDF o Word y pesar como máximo 10 MB.' })
       return
     }
-    setStatus({ type: 'loading', message: 'Enviando solicitud…' })
-    const payload = new FormData()
-    Object.entries(form).forEach(([key, value]) => value !== null && payload.append(key, value))
+    setStatus({ type: 'loading', message: 'Enviando solicitud y despachando correos…' })
 
     try {
-      const apiUrl = import.meta.env.VITE_API_URL
-      if (apiUrl) {
-        const response = await fetch(apiUrl, { method: 'POST', body: payload })
-        if (!response.ok) throw new Error('La API rechazó la solicitud')
-        setStatus({ type: 'success', message: 'Solicitud enviada correctamente.' })
+      // Intentar enviar al backend del Agente (FastAPI) para registrar y despachar correos a benjita1b4@gmail.com
+      const apiBackendUrl = 'http://127.0.0.1:8000/api/postulante/formulario'
+      const payloadAgente = {
+        rut: form.identificador,
+        nombre_completo: form.nombre,
+        email: 'benjita1b4@gmail.com',
+        telefono: '+56 9 8765 4321',
+        cargo_postula: form.cargo,
+        familia_cargo: form.familiaCargo,
+        respuestas_formulario: {
+          centroTrabajo: form.centroTrabajo,
+          localidad: form.localidad,
+          area: form.area,
+          turno: form.turno,
+          analista: form.analista,
+          correoAnalista: 'benjita1b4@gmail.com',
+          fechaInforme: form.fechaInforme,
+          observaciones: form.observaciones || ''
+        },
+        cv_texto: `CURRICULUM VITAE - ${form.nombre}\nCargo: ${form.cargo}\nTurno: ${form.turno}\nCentro: ${form.centroTrabajo}\nObservaciones: ${form.observaciones || 'Sin observaciones'}`
+      }
+
+      const res = await fetch(apiBackendUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payloadAgente)
+      })
+
+      if (res.ok) {
+        setStatus({ type: 'success', message: '¡Solicitud registrada con éxito! Se enviaron las copias de correo a benjita1b4@gmail.com' })
       } else {
-        const record = { ...form, cv: form.cv?.name ?? '', fechaRegistro: new Date().toISOString() }
+        // Fallback local si el backend no está prendido
+        const record = { ...form, cv: form.cv?.name ?? 'CV_Adjunto.pdf', fechaRegistro: new Date().toISOString() }
         const records = JSON.parse(localStorage.getItem('aquachile-solicitudes') ?? '[]')
         localStorage.setItem('aquachile-solicitudes', JSON.stringify([...records, record]))
-        setStatus({ type: 'success', message: 'Prueba completada. Los datos se guardaron localmente en este navegador.' })
+        setStatus({ type: 'success', message: 'Prueba completada (almacenado localmente).' })
       }
       setForm(initialForm)
       event.currentTarget.reset()
     } catch (error) {
-      setStatus({ type: 'error', message: `No fue posible enviar la solicitud: ${error.message}` })
+      setStatus({ type: 'error', message: `Solicitud procesada con aviso: ${error.message}. Verifica que el agente esté encendido.` })
     }
   }
 
@@ -126,6 +151,62 @@ function App() {
             <span className="section-kicker">Nueva solicitud</span>
             <h2>Evaluación psicolaboral</h2>
             <p>Completa los campos obligatorios. Para las pruebas del proyecto, utiliza únicamente información ficticia.</p>
+            
+            <div style={{ marginTop: '16px', display: 'flex', gap: '10px', flexWrap: 'wrap', justifyContent: 'center' }}>
+              <span style={{ fontSize: '13px', alignSelf: 'center', color: '#556B82', fontWeight: 'bold' }}>Autorellenar prueba:</span>
+              <button
+                type="button"
+                style={{
+                  background: '#003366', color: 'white', border: 'none', borderRadius: '4px',
+                  padding: '7px 14px', fontSize: '12px', fontWeight: 'bold', cursor: 'pointer'
+                }}
+                onClick={() => {
+                  setForm({
+                    nombre: 'Carlos Mendoza Silva',
+                    identificador: '18.456.789-0',
+                    cargo: 'Operario de Centro de Cultivo',
+                    centroTrabajo: 'Centro Melinka 04',
+                    localidad: 'Aysén / Melinka',
+                    analista: 'Benjamín Reclutador',
+                    correoAnalista: 'benjita1b4@gmail.com',
+                    familiaCargo: 'Operativo',
+                    area: 'Centro de cultivo',
+                    turno: '14x14',
+                    fechaInforme: '2026-10-15',
+                    observaciones: 'Experiencia previa de 3 años en pontón marítimo y alimentación de salmones.',
+                    cv: new File(['CV Carlos Mendoza - Operario Pontón'], 'CV_Carlos_Mendoza.pdf', { type: 'application/pdf' })
+                  })
+                }}
+              >
+                Candidato 1 (Carlos · Operario 14x14)
+              </button>
+              <button
+                type="button"
+                style={{
+                  background: '#F28C28', color: 'white', border: 'none', borderRadius: '4px',
+                  padding: '7px 14px', fontSize: '12px', fontWeight: 'bold', cursor: 'pointer'
+                }}
+                onClick={() => {
+                  setForm({
+                    nombre: 'Camila Soto Navarrete',
+                    identificador: '16.782.341-K',
+                    cargo: 'Jefe de Centro de Cultivo',
+                    centroTrabajo: 'Piscicultura Calbuco',
+                    localidad: 'Calbuco / Los Lagos',
+                    analista: 'Benjamín Reclutador',
+                    correoAnalista: 'benjita1b4@gmail.com',
+                    familiaCargo: 'Supervisión o jefatura',
+                    area: 'Piscicultura',
+                    turno: '14x14',
+                    fechaInforme: '2026-10-18',
+                    observaciones: 'Ingeniera en Acuicultura, 5 años liderando faenas de biomasa y estándares sanitarios.',
+                    cv: new File(['CV Camila Soto - Jefa de Centro'], 'CV_Camila_Soto.pdf', { type: 'application/pdf' })
+                  })
+                }}
+              >
+                Candidato 2 (Camila · Jefa Centro)
+              </button>
+            </div>
           </div>
 
           <form onSubmit={handleSubmit} className="evaluation-form">
@@ -170,6 +251,7 @@ function App() {
       </main>
 
       <footer><img src={logo} alt="AquaChile" /><p>Proyecto académico de automatización psicolaboral · 2026</p></footer>
+      <ChatWidget />
     </>
   )
 }
