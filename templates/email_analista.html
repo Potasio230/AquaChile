@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nueva Solicitud Ingresada - AquaChile RRHH</title>
+  <link href="https://fonts.googleapis.com/css2?family=PT+Sans:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #F8FAFC;
+      font-family: 'PT Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      color: #003366;
+    }
+    .wrapper {
+      width: 100%;
+      table-layout: fixed;
+      background-color: #F8FAFC;
+      padding: 40px 12px;
+    }
+    .main-card {
+      background-color: #ffffff;
+      margin: 0 auto;
+      max-width: 620px;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 10px 25px rgba(0, 51, 102, 0.08);
+      border: 1px solid #E2E8F0;
+    }
+    .header {
+      background: linear-gradient(135deg, #002244 0%, #003366 100%);
+      padding: 26px 30px;
+      border-bottom: 3px solid #F28C28;
+    }
+    .brand-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .logo-text {
+      color: #ffffff;
+      font-size: 22px;
+      font-weight: 700;
+      margin: 0;
+      letter-spacing: 0.5px;
+    }
+    .tag-portal {
+      color: #F28C28;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+    }
+    .content {
+      padding: 34px 30px;
+    }
+    .section-kicker {
+      display: inline-block;
+      color: #F28C28;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      font-size: 11px;
+      margin-bottom: 8px;
+    }
+    h1 {
+      font-size: 24px;
+      color: #003366;
+      margin: 0 0 12px 0;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+    p {
+      font-size: 14px;
+      line-height: 1.6;
+      color: #556B82;
+      margin: 0 0 20px 0;
+    }
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 22px 0;
+      background-color: #F8FAFC;
+      border-radius: 6px;
+      border: 1px solid #E2E8F0;
+    }
+    .data-table td {
+      padding: 10px 16px;
+      border-bottom: 1px solid #EDF2F7;
+      font-size: 13px;
+    }
+    .data-table tr:last-child td {
+      border-bottom: none;
+    }
+    .label {
+      color: #556B82;
+      font-weight: 400;
+      width: 38%;
+    }
+    .val {
+      color: #003366;
+      font-weight: 700;
+    }
+    .btn-container {
+      text-align: center;
+      margin: 28px 0 10px 0;
+    }
+    .submit-button {
+      display: inline-block;
+      background-color: #F28C28;
+      color: #ffffff !important;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 14px;
+      padding: 12px 28px;
+      border-radius: 6px;
+      box-shadow: 0 8px 18px rgba(242, 140, 40, 0.25);
+    }
+    .footer {
+      background-color: #002244;
+      padding: 20px 30px;
+      text-align: center;
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.65);
+    }
+    .footer strong {
+      color: #ffffff;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <div class="main-card">
+      <div class="header">
+        <table width="100%" cellpadding="0" cellspacing="0">
+          <tr>
+            <td style="color: #ffffff; font-size: 22px; font-weight: 700;">AquaChile</td>
+            <td style="text-align: right; color: #F28C28; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.14em;">Gestión Interna</td>
+          </tr>
+        </table>
+      </div>
+      <div class="content">
+        <span class="section-kicker">Reclutamiento &amp; Selección</span>
+        <h1>Nueva solicitud en bandeja</h1>
+        <p>Estimado/a <strong>{{analista}}</strong>, ha ingresado un nuevo expediente para revisión y programación de evaluación psicolaboral.</p>
+        
+        <table class="data-table">
+          <tr>
+            <td class="label">Candidato:</td>
+            <td class="val">{{nombre}}</td>
+          </tr>
+          <tr>
+            <td class="label">RUT / Identificador:</td>
+            <td class="val">{{identificador}}</td>
+          </tr>
+          <tr>
+            <td class="label">Cargo al que postula:</td>
+            <td class="val">{{cargo}}</td>
+          </tr>
+          <tr>
+            <td class="label">Área / Familia:</td>
+            <td class="val">{{area}} · {{familiaCargo}}</td>
+          </tr>
+          <tr>
+            <td class="label">Centro / Localidad:</td>
+            <td class="val">{{centroTrabajo}} · {{localidad}}</td>
+          </tr>
+          <tr>
+            <td class="label">Sistema de Turno:</td>
+            <td class="val">{{turno}}</td>
+          </tr>
+          <tr>
+            <td class="label">Fecha límite informe:</td>
+            <td class="val" style="color: #F28C28;">{{fechaInforme}}</td>
+          </tr>
+        </table>
+
+        <div class="btn-container">
+          <a href="{{url_dashboard}}" class="submit-button">Revisar ficha en el dashboard</a>
+        </div>
+      </div>
+
+      <div class="footer">
+        <p style="margin: 0;"><strong>AquaChile S.A.</strong> · Plataforma Interna de Personas &amp; Talento</p>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
