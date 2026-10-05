@@ -52,7 +52,7 @@ export default function ChatWidget() {
     }
     const interval = setInterval(() => {
       setMouthOpen((prev) => !prev)
-    }, 220)
+    }, 160)
     return () => clearInterval(interval)
   }, [isTalking])
 
