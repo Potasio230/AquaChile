@@ -4,6 +4,7 @@ import heroPoster from '../assets/Cultivos.jpg'
 import heroVideo from '../assets/BackgroundAquaChile.mp4'
 import salmon from '../assets/Salmón.png'
 import ChatWidget from './components/ChatWidget'
+import useSmoothScroll from './hooks/useSmoothScroll'
 
 const initialForm = {
   nombre: '', identificador: '', cargo: '', centroTrabajo: '', localidad: '',
@@ -30,6 +31,8 @@ function App() {
   const [menuOpen, setMenuOpen] = useState(false)
   const [navHidden, setNavHidden] = useState(false)
   const [status, setStatus] = useState({ type: 'idle', message: '' })
+
+  useSmoothScroll()
 
   useEffect(() => {
     let lastScrollTop = 0
@@ -138,11 +141,6 @@ function App() {
             <span className="section-kicker">Un proceso conectado</span>
             <h2>La información correcta, desde el primer paso.</h2>
             <p>Esta solicitud reúne los antecedentes necesarios para preparar la evaluación y activar el flujo automatizado del equipo de Reclutamiento y Selección.</p>
-            <div className="steps">
-              <div><strong>01</strong><span>Completa los antecedentes</span></div>
-              <div><strong>02</strong><span>Adjunta el currículum</span></div>
-              <div><strong>03</strong><span>Envía la solicitud</span></div>
-            </div>
           </div>
         </section>
 
@@ -153,11 +151,11 @@ function App() {
             <p>Completa los campos obligatorios. Para las pruebas del proyecto, utiliza únicamente información ficticia.</p>
             
             <div style={{ marginTop: '16px', display: 'flex', gap: '10px', flexWrap: 'wrap', justifyContent: 'center' }}>
-              <span style={{ fontSize: '13px', alignSelf: 'center', color: '#556B82', fontWeight: 'bold' }}>Autorellenar prueba:</span>
+              <span style={{ fontSize: '13px', alignSelf: 'center', color: '#E0F2FE', fontWeight: 'bold', textShadow: '0 2px 6px rgba(0,0,0,0.6)' }}>Autorellenar prueba:</span>
               <button
                 type="button"
                 style={{
-                  background: '#003366', color: 'white', border: 'none', borderRadius: '4px',
+                  background: 'rgba(255,255,255,0.12)', color: 'white', border: '1px solid rgba(255,255,255,0.5)', borderRadius: '4px',
                   padding: '7px 14px', fontSize: '12px', fontWeight: 'bold', cursor: 'pointer'
                 }}
                 onClick={() => {
