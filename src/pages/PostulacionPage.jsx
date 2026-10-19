@@ -9,6 +9,9 @@ const initialForm = {
 const familias = ['Operativo', 'Técnico', 'Profesional', 'Supervisión o jefatura', 'Administrativo']
 const areas = ['Centro de cultivo', 'Piscicultura', 'Planta de proceso', 'Mantención', 'Calidad', 'Logística', 'Administración', 'Otra']
 const turnos = ['Jornada ordinaria', 'Sistema de turnos', '7x7', '10x10', '14x14', 'Otro']
+const cargos = ['Operario de Centro de Cultivo', 'Operador de Pontón', 'Buzo Acuicultor', 'Técnico en Acuicultura', 'Jefe de Centro de Cultivo', 'Supervisor de Producción', 'Operario de Planta de Proceso', 'Operador de Sala de Despiece', 'Técnico en Mantención', 'Electricista', 'Mecánico', 'Analista de Calidad', 'Encargado de Logística', 'Administrativo']
+const centros = ['Centro Melinka 04', 'Centro de Cultivo Punta Johnson', 'Centro de Cultivo Puqueldón', 'Piscicultura Calbuco', 'Piscicultura Río Pescado', 'Piscicultura Hollenberg', 'Planta de Proceso Puerto Montt', 'Planta de Proceso Natales', 'Oficina Corporativa Puerto Montt']
+const localidades = ['Calbuco', 'Chiloé', 'Melinka', 'Puerto Aysén', 'Puerto Montt', 'Puerto Natales', 'Punta Arenas', 'Temuco', 'Valdivia']
 
 function Field({ label, name, children, hint, ...props }) {
   return (
@@ -93,11 +96,11 @@ function PostulacionPage() {
         <p>Completa los campos obligatorios. Para las pruebas del proyecto, utiliza únicamente información ficticia.</p>
 
         <div style={{ marginTop: '16px', display: 'flex', gap: '10px', flexWrap: 'wrap', justifyContent: 'center' }}>
-          <span style={{ fontSize: '13px', alignSelf: 'center', color: '#556B82', fontWeight: 'bold' }}>Autorellenar prueba:</span>
+          <span style={{ fontSize: '13px', alignSelf: 'center', color: '#E0F2FE', fontWeight: 'bold', textShadow: '0 2px 6px rgba(0,0,0,0.6)' }}>Autorellenar prueba:</span>
           <button
             type="button"
             style={{
-              background: '#003366', color: 'white', border: 'none', borderRadius: '4px',
+              background: 'rgba(255,255,255,0.12)', color: 'white', border: '1px solid rgba(255,255,255,0.5)', borderRadius: '4px',
               padding: '7px 14px', fontSize: '12px', fontWeight: 'bold', cursor: 'pointer'
             }}
             onClick={() => {
@@ -106,7 +109,7 @@ function PostulacionPage() {
                 identificador: '18.456.789-0',
                 cargo: 'Operario de Centro de Cultivo',
                 centroTrabajo: 'Centro Melinka 04',
-                localidad: 'Aysén / Melinka',
+                localidad: 'Melinka',
                 analista: 'Benjamín Reclutador',
                 correoAnalista: 'benjita1b4@gmail.com',
                 familiaCargo: 'Operativo',
@@ -132,7 +135,7 @@ function PostulacionPage() {
                 identificador: '16.782.341-K',
                 cargo: 'Jefe de Centro de Cultivo',
                 centroTrabajo: 'Piscicultura Calbuco',
-                localidad: 'Calbuco / Los Lagos',
+                localidad: 'Calbuco',
                 analista: 'Benjamín Reclutador',
                 correoAnalista: 'benjita1b4@gmail.com',
                 familiaCargo: 'Supervisión o jefatura',
@@ -155,9 +158,24 @@ function PostulacionPage() {
           <div className="form-grid">
             <Field label="Nombre completo" name="nombre" value={form.nombre} onChange={update} required />
             <Field label="RUT o identificador" name="identificador" value={form.identificador} onChange={update} required />
-            <Field label="Cargo al que postula" name="cargo" value={form.cargo} onChange={update} required />
-            <Field label="Instalación, planta o centro" name="centroTrabajo" value={form.centroTrabajo} onChange={update} required />
-            <Field label="Región o localidad" name="localidad" value={form.localidad} onChange={update} required />
+            <Field label="Cargo al que postula" required>
+              <select name="cargo" value={form.cargo} onChange={update} required>
+                <option value="">Selecciona una opción</option>
+                {cargos.map((item) => <option key={item}>{item}</option>)}
+              </select>
+            </Field>
+            <Field label="Instalación, planta o centro" required>
+              <select name="centroTrabajo" value={form.centroTrabajo} onChange={update} required>
+                <option value="">Selecciona una opción</option>
+                {centros.map((item) => <option key={item}>{item}</option>)}
+              </select>
+            </Field>
+            <Field label="Localidad" required>
+              <select name="localidad" value={form.localidad} onChange={update} required>
+                <option value="">Selecciona una opción</option>
+                {localidades.map((item) => <option key={item}>{item}</option>)}
+              </select>
+            </Field>
           </div>
         </fieldset>
 

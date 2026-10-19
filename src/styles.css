@@ -17,6 +17,10 @@ html { scroll-behavior: smooth; }
 body { margin: 0; min-width: 320px; }
 button, input, select, textarea { font: inherit; }
 a { color: inherit; text-decoration: none; }
+/* La barra del header es fija (82px / 70px en móvil): sin este margen, cada
+   sección de destino aterriza debajo de ella y sus primeros píxeles quedan
+   tapados. No afecta al scroll animado, que calcula su propio offset. */
+section[id] { scroll-margin-top: 82px; }
 
 /* ---------------------------------------------------------------- Header -- */
 .site-header {
@@ -66,7 +70,6 @@ h1 { margin: 18px 0 24px; font-size: clamp(3rem,6vw,5.7rem); line-height: .98; l
   position: relative;
   display: grid; grid-template-columns: minmax(320px,.9fr) 1.1fr;
   min-height: 650px; color: #FFFFFF; overflow: hidden;
-  border-bottom: 1px solid rgba(255,255,255,.15);
 }
 /* Capa de fondo desenfocado. El inset negativo + scale evitan bordes
    blancos provocados por el blur. */
@@ -91,18 +94,48 @@ h1 { margin: 18px 0 24px; font-size: clamp(3rem,6vw,5.7rem); line-height: .98; l
 .process-copy h2,.form-heading h2 { max-width: 700px; margin: 12px 0 22px; font-size: clamp(2.2rem,4vw,3.8rem); line-height: 1.08; letter-spacing: -.02em; color: var(--navy); }
 .process-copy h2 { color: #FFFFFF; text-shadow: 0 2px 12px rgba(0,0,0,.7); }
 .process-copy>p { max-width: 670px; color: rgba(255,255,255,.88); line-height: 1.75; font-size: 1.08rem; text-shadow: 0 2px 10px rgba(0,0,0,.75); }
-.steps { margin-top: 36px; display: grid; gap: 18px; }
-.steps div { display: flex; align-items: center; gap: 18px; font-weight: 600; }
-.steps strong { color: var(--orange); }
 
 /* ------------------------------------------------------------- Formulario --
    Esta sección mantiene su propia paleta teal, independiente del navy del
    resto del sitio. Solo el botón de envío usa el naranja de marca. */
-.form-section { padding: clamp(70px,9vw,130px) clamp(20px,7vw,110px); background: linear-gradient(180deg,#f1f7f5,#e8f1ef); }
-.form-heading { max-width: 820px; margin: 0 auto 38px; text-align: center; }
-.form-heading h2 { margin-inline: auto; color: #004d55; }
-.form-heading p { color: #5d7478; line-height: 1.7; }
-.evaluation-form { max-width: 1080px; margin: auto; padding: clamp(24px,5vw,58px); border: 1px solid #d9e5e2; border-radius: 18px; background: white; box-shadow: 0 22px 60px rgba(21,69,70,.09); }
+.form-section {
+  position: relative;
+  overflow: hidden;
+  padding: clamp(70px,9vw,130px) clamp(20px,7vw,110px);
+}
+/* Fondo en su propia capa para poder desenfocarlo sin borrar el contenido. */
+.form-section::before {
+  content: "";
+  position: absolute;
+  inset: -12px;
+  background:
+    linear-gradient(180deg, rgba(0, 25, 55, 0.38) 0%, rgba(0, 35, 75, 0.55) 100%),
+    url('../assets/marForm.jpg') no-repeat center center / cover;
+  filter: blur(3px);
+  transform: scale(1.05);
+  z-index: 0;
+  pointer-events: none;
+}
+.form-heading { position: relative; z-index: 1; max-width: 820px; margin: 0 auto 38px; text-align: center; }
+.form-heading .section-kicker { color: #38bdf8; font-weight: 700; text-shadow: 0 2px 6px rgba(0,0,0,0.6); }
+.form-heading h2 { margin-inline: auto; color: #FFFFFF; text-shadow: 0 2px 12px rgba(0,0,0,0.7); }
+.form-heading p { color: #E0F2FE; line-height: 1.7; text-shadow: 0 2px 6px rgba(0,0,0,0.6); }
+/* Cristal esmerilado: la imagen marForm.jpg se ve a través de la tarjeta.
+   Los inputs conservan su propio fondo opaco (#fbfdfc / white), así que bajar
+   la opacidad no afecta la legibilidad de lo que se escribe — solo se tiñe el
+   "lienzo" de la tarjeta de azul marino. */
+.evaluation-form {
+  position: relative;
+  z-index: 1;
+  max-width: 1080px;
+  margin: auto;
+  padding: clamp(24px,5vw,58px);
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.80);
+  backdrop-filter: blur(14px);
+  box-shadow: 0 24px 60px rgba(0, 15, 40, 0.35);
+}
 fieldset { border: 0; padding: 0 0 42px; margin: 0 0 40px; border-bottom: 1px solid #e5ecea; }
 fieldset:last-of-type { margin-bottom: 24px; }
 legend { width: 100%; margin-bottom: 26px; color: #004d55; font-size: 1.25rem; font-weight: 700; }
@@ -110,7 +143,7 @@ legend span { display: inline-grid; place-items: center; width: 32px; height: 32
 .form-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 23px; }
 .field { display: flex; flex-direction: column; gap: 8px; color: #28494e; font-weight: 600; }
 .field b,.form-actions b { color: var(--orange); }
-.field small { color: #718589; font-weight: 400; }
+.field small { color: #455a5e; font-weight: 400; }
 .field input,.field select,.field textarea { width: 100%; border: 1px solid #c9d8d5; border-radius: 7px; padding: 13px 14px; background: #fbfdfc; color: #12353a; outline: none; }
 .field input:focus,.field select:focus,.field textarea:focus { border-color: var(--teal); box-shadow: 0 0 0 3px rgba(0,114,122,.12); background: white; }
 .field textarea { resize: vertical; min-height: 118px; }
@@ -120,12 +153,13 @@ legend span { display: inline-grid; place-items: center; width: 32px; height: 32
 .form-status.error { color: #9b2c2c; background: #fdecec; }
 .form-status.loading { color: #004d55; background: #e5f2f2; }
 .form-actions { display: flex; justify-content: space-between; align-items: center; gap: 20px; }
-.form-actions p { color: #718589; font-size: .9rem; }
+.form-actions p { color: #455a5e; font-size: .9rem; }
 .submit-button:disabled { opacity: .65; cursor: wait; }
 footer { min-height: 145px; display: flex; align-items: center; justify-content: space-between; gap: 30px; padding: 32px clamp(24px,7vw,110px); background: var(--dark); color: rgba(255,255,255,.72); }
 footer img { width: 145px; filter: brightness(0) invert(1); }
 
 @media (max-width:820px) {
+  section[id] { scroll-margin-top: 70px; }
   .site-header { height: 70px; background: rgba(0,51,102,.94); }
   .brand img { width: 130px; }
   .menu-button { display: block; }
