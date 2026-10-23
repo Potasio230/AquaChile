@@ -1,22 +1,39 @@
+<div align="center">
+
+<img src="assets/logo.png" width="240" alt="Logo de AquaChile">
+
 # Plataforma de Gestión y Evaluación Psicolaboral — AquaChile
 
-Plataforma web para la digitalización, centralización y automatización del proceso de reclutamiento y selección de **AquaChile**. Optimiza la recepción de postulaciones operativas y técnicas en centros de cultivo y pisciculturas, integrando asistencia interactiva para el postulante y un módulo de soporte para el evaluador.
+**Plataforma web para apoyar la recepción y gestión de solicitudes de evaluación psicolaboral.**
+
+![Plataforma](https://img.shields.io/badge/Plataforma-Web-0A6E83?style=for-the-badge)
+![React](https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react&logoColor=black)
+![Vite](https://img.shields.io/badge/Vite-Frontend-646CFF?style=for-the-badge&logo=vite&logoColor=white)
+![Oracle](https://img.shields.io/badge/Base%20de%20datos-Oracle-F80000?style=for-the-badge&logo=oracle&logoColor=white)
+![Estado](https://img.shields.io/badge/Estado-Prototipo-yellow?style=for-the-badge)
+
+</div>
 
 ---
 
-## Equipo y Distribución de Roles
+## Descripción
 
-| Integrante | Rol Principal | Responsabilidades |
-|---|---|---|
-| **Benjamín Agüero** (@yountek14) | **Backend, IA & Notificaciones** | Arquitectura del servidor (FastAPI), despacho automatizado de correos corporativos HTML (SMTP), lógica del asistente interactivo e integración con el motor de evaluación psicolaboral. |
-| **Luis Fermín** (@Lguille99) | **Formularios, API & Persistencia** | Modelamiento de captura de antecedentes, validaciones de formularios de postulación interna/externa, endpoints de solicitudes y estructuración de base de datos relacional. |
-| **Raúl Ferrini** (@Potasio230) | **Frontend & UI/UX** | Diseño de interfaz en React + Vite con identidad visual de AquaChile, experiencia de usuario responsiva, integración de video corporativo y layout de vistas principales. |
+**AquaChile** reúne en una interfaz web los antecedentes necesarios para iniciar una evaluación psicolaboral de postulantes operativos y técnicos en centros de cultivo, pisciculturas y plantas de proceso. El proyecto incluye una página de presentación, un formulario de solicitud y un asistente virtual con información sobre el proceso.
 
----
+## Funcionalidades
+
+- Página de inicio con navegación, video e información del proceso.
+- Formulario para registrar antecedentes del candidato, cargo, centro, localidad, turno, analista y fecha requerida.
+- Validación del currículum en PDF o Word, con un tamaño máximo de 10 MB.
+- Datos ficticios precargables para probar visualmente el formulario.
+- Asistente Salmón con preguntas frecuentes y conexión opcional al servicio de chat.
+- Plantillas HTML de notificación para candidato y analista.
+- Scripts PL/SQL para el esquema de evaluación, auditoría y gestión de estados.
 
 ## Vistas de la Plataforma
 
 ### 1. Portal de Inicio y Marca AquaChile
+
 Portal público institucional con video de fondo, navegación corporativa y presentación de las etapas de postulación.
 
 ![Portal de Inicio](docs/screenshots/01_portal_inicio.png)
@@ -24,37 +41,119 @@ Portal público institucional con video de fondo, navegación corporativa y pres
 ---
 
 ### 2. Formulario de Postulación de Candidatos
-Captura de antecedentes personales, cargo, instalación (piscicultura/pontón), turno (ej. 14x14) y subida de currículum vitae en PDF/Word. Incluye botones de prueba rápida para validación de flujo.
+
+Captura de antecedentes personales, cargo, instalación (piscicultura/pontón), turno (ej. 14x14) y selección de currículum en PDF/Word. Incluye botones de prueba rápida para validación visual del flujo.
 
 ![Formulario de Postulación](docs/screenshots/02_formulario_postulacion.png)
 
 ---
 
 ### 3. Asistente Salmón (Chatbot Flotante)
-Asistente virtual interactivo en la esquina inferior derecha. Cuenta con avatar animado de salmón (boca abierta/cerrada al hablar), efecto máquina de escribir (*typewriter*) y preguntas frecuentes directas sobre turnos 14x14, certificaciones y etapas del proceso.
+
+Asistente virtual en la esquina inferior derecha, con avatar animado, efecto máquina de escribir (*typewriter*) y preguntas frecuentes sobre turnos 14x14, certificaciones y etapas del proceso. Si el servicio del chatbot no está disponible, entrega una respuesta alternativa.
 
 ![Asistente Virtual Salmón](docs/screenshots/03_chatbot_salmon.png)
 
 ---
 
 ### 4. Notificaciones por Correo Electrónico (HTML)
-Despacho automático de comprobantes oficiales con la paleta de colores de AquaChile (azul marino y naranja institucional):
-- **Candidato:** Comprobante de postulación recibida con código de seguimiento y resumen de etapas.
-- **Analista de Selección:** Notificación con la ficha técnica del nuevo postulante y fecha límite requerida.
+
+El repositorio incluye plantillas HTML para los mensajes previstos en el flujo:
+
+- **Candidato:** comprobante de postulación recibida con código de seguimiento y resumen de etapas.
+- **Analista de Selección:** notificación con la ficha técnica del nuevo postulante y fecha límite requerida.
 
 ![Comprobante por Correo](docs/screenshots/04_email_candidato.png)
 
----
 
 ## Tecnologías y Arquitectura
 
-- **Frontend:** React 19, Vite, CSS moderno responsivo, Google Fonts (`PT Sans`).
-- **Backend & APIs:** FastAPI / Python + Node.js Express.
-- **Motor de Notificaciones:** Python `smtplib` con plantillas HTML dinámicas (`templates/`).
-- **Procesamiento de Documentos:** PyMuPDF (`fitz`) para extracción y lectura de CVs en PDF.
-- **IA & Asistencia:** Arquitectura híbrida de soporte al evaluador con glosario técnico acuícola y asistente en tiempo real.
+| Área | Tecnología |
+| --- | --- |
+| Interfaz | React, React DOM y Vite |
+| Estilos | CSS responsivo y Google Fonts (`PT Sans`) |
+| API y asistente | FastAPI / Python y Node.js Express según la arquitectura documentada; backend externo a este repositorio |
+| Notificaciones | Plantillas HTML; el README original describe despacho SMTP desde Python |
+| Base de datos | Oracle Database y PL/SQL en `database/` |
+| Documentos | PDF de ejemplo en `cvs_ejemplo/`; el procesamiento automático requiere backend |
 
----
+## Cómo ejecutar
+
+### Requisitos
+
+- **Node.js 18 o superior** y npm.
+- Un navegador web actualizado.
+- Para conectar las funciones del servidor, el backend FastAPI debe ejecutarse por separado en el puerto `8000` o debe actualizarse la URL en el frontend.
+- Para instalar el módulo de base de datos: acceso a Oracle Database y SQL Developer, SQLcl o SQL*Plus.
+
+### Opción A — Desarrollo local
+
+Desde la carpeta raíz de este repositorio:
+
+```bash
+npm install
+npm run dev
+```
+
+Vite mostrará en la terminal la dirección local, normalmente `http://localhost:5173/`.
+
+Para generar una versión compilada del frontend:
+
+```bash
+npm run build
+```
+
+Los archivos generados quedan en `dist/`.
+
+### Backend y servicios
+
+El README original documenta un servicio FastAPI en `AquaChileAgente`, con esta forma de inicio:
+
+```bash
+cd AquaChileAgente
+pip install -r requirements.txt
+python -m uvicorn api.app:app --host 127.0.0.1 --port 8000 --reload
+```
+
+Ese directorio no está incluido en este repositorio. Si el backend está disponible por separado, inicia su API y revisa la documentación en `http://127.0.0.1:8000/docs`. El frontend actual usa `http://127.0.0.1:8000/api/postulante/formulario` para el formulario y `http://127.0.0.1:8000/api/chat/consulta` para el chat.
+
+### Base de datos Oracle
+
+Los scripts del módulo PL/SQL y su orden de ejecución están documentados en [`database/README.md`](database/README.md). Se ejecutan desde Oracle SQL Developer, SQLcl o SQL*Plus.
+
+## Estructura del Proyecto
+
+```text
+.
+├── assets/                    # Logos, imágenes y video de la página
+├── cvs_ejemplo/               # CV ficticios para demostración
+├── database/                  # Esquema, paquetes, triggers y pruebas PL/SQL
+│   ├── packages/
+│   ├── pruebas/
+│   ├── schema/
+│   └── triggers/
+├── docs/screenshots/          # Capturas de las vistas y del correo
+├── src/
+│   ├── components/            # Componentes compartidos, incluido el chatbot
+│   ├── hooks/                 # Hooks de interfaz
+│   ├── layouts/               # Estructuras de página
+│   ├── pages/                 # Vistas de inicio y postulación
+│   ├── App.jsx                # Aplicación principal
+│   ├── main.jsx               # Punto de entrada de React
+│   └── styles.css             # Estilos globales
+├── templates/                 # Plantillas HTML de correo
+├── index.html
+├── package.json
+└── vite.config.js
+```
+
+## Equipo y Distribución de Roles
+
+| Integrante | Rol Principal | Responsabilidades |
+|---|---|---|
+| **Benjamín Agüero**  | **Backend, IA & Notificaciones** | Arquitectura del servidor (FastAPI), despacho automatizado de correos corporativos HTML (SMTP), lógica del asistente interactivo e integración con el motor de evaluación psicolaboral. |
+| **Luis Fermín**  | **Formularios, API & Persistencia** | Modelamiento de captura de antecedentes, validaciones de formularios de postulación interna/externa, endpoints de solicitudes y estructuración de base de datos relacional. |
+| **Raúl Ferrini**  | **Frontend & UI/UX** | Diseño de interfaz en React + Vite con identidad visual de AquaChile, experiencia de usuario responsiva, integración de video corporativo y layout de vistas principales. |
 
 ## Tareas Pendientes y Próximos Pasos
 
@@ -67,26 +166,6 @@ Despacho automático de comprobantes oficiales con la paleta de colores de AquaC
 
 ---
 
-## Puesta en Marcha Local
+## Módulo de Base de Datos
 
-### Requisitos
-- Node.js (v18+)
-- Python (v3.10+)
-
-### 1. Iniciar el Frontend
-```bash
-cd repo_equipo
-npm install
-npm run dev
-```
-La aplicación abrirá en: `http://localhost:5173/`
-
-El formulario envía un `POST` multipart al endpoint definido por `VITE_API_URL` (por defecto, `http://127.0.0.1:8000/api/postulante/formulario`). Incluye el campo `solicitud` con el JSON de antecedentes y `cv` con el archivo. El backend debe aceptar ese formato; una respuesta HTTP exitosa confirma la recepción por el servidor, pero no garantiza por sí sola que los correos se hayan despachado.
-
-### 2. Iniciar el Backend & Servicios
-```bash
-cd AquaChileAgente
-pip install -r requirements.txt
-python -m uvicorn api.app:app --host 127.0.0.1 --port 8000 --reload
-```
-API y documentación Swagger en: `http://127.0.0.1:8000/docs`
+El directorio `database/` contiene la implementación PL/SQL de Oracle Database para la lógica transaccional y la auditoría del ciclo de vida de postulaciones y evaluaciones. Incluye el trigger de auditoría, el paquete de gestión de evaluaciones, el esquema y casos de prueba. La descripción detallada se mantiene en [`database/README.md`](database/README.md).
