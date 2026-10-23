@@ -55,6 +55,7 @@ function Navbar() {
         <Link className="nav-cta" to="/postulacion">
           Nueva evaluación
         </Link>
+        <Link to="/acceso-interno">Acceso interno</Link>
       </nav>
     </header>
   )

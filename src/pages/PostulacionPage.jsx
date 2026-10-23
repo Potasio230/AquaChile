@@ -1,7 +1,8 @@
 import { useState } from 'react'
+import { api } from '../services/api'
 
 const initialForm = {
-  nombre: '', identificador: '', cargo: '', centroTrabajo: '', localidad: '',
+  nombre: '', identificador: '', email: '', telefono: '', cargo: '', centroTrabajo: '', localidad: '',
   analista: '', correoAnalista: '', familiaCargo: '', area: '', turno: '',
   fechaInforme: '', observaciones: '', cv: null,
 }
@@ -43,48 +44,25 @@ function PostulacionPage() {
       setStatus({ type: 'error', message: 'El currículum debe ser PDF o Word y pesar como máximo 10 MB.' })
       return
     }
-    setStatus({ type: 'loading', message: 'Enviando solicitud y despachando correos…' })
+    setStatus({ type: 'loading', message: 'Registrando solicitud…' })
 
     try {
-      const apiBackendUrl = 'http://127.0.0.1:8000/api/postulante/formulario'
-      const payloadAgente = {
-        rut: form.identificador,
-        nombre_completo: form.nombre,
-        email: 'benjita1b4@gmail.com',
-        telefono: '+56 9 8765 4321',
-        cargo_postula: form.cargo,
-        familia_cargo: form.familiaCargo,
-        respuestas_formulario: {
-          centroTrabajo: form.centroTrabajo,
-          localidad: form.localidad,
-          area: form.area,
-          turno: form.turno,
-          analista: form.analista,
-          correoAnalista: 'benjita1b4@gmail.com',
-          fechaInforme: form.fechaInforme,
-          observaciones: form.observaciones || ''
-        },
-        cv_texto: `CURRICULUM VITAE - ${form.nombre}\nCargo: ${form.cargo}\nTurno: ${form.turno}\nCentro: ${form.centroTrabajo}\nObservaciones: ${form.observaciones || 'Sin observaciones'}`
+      const data = new FormData()
+      const fieldMap = {
+        nombre: form.nombre, rut: form.identificador, email: form.email, telefono: form.telefono,
+        cargo: form.cargo, familia_cargo: form.familiaCargo, centro_trabajo: form.centroTrabajo,
+        localidad: form.localidad, area: form.area, turno: form.turno, analista: form.analista,
+        correo_analista: form.correoAnalista, fecha_informe: form.fechaInforme,
+        observaciones: form.observaciones,
       }
-
-      const res = await fetch(apiBackendUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payloadAgente)
-      })
-
-      if (res.ok) {
-        setStatus({ type: 'success', message: '¡Solicitud registrada con éxito! Se enviaron las copias de correo a benjita1b4@gmail.com' })
-      } else {
-        const record = { ...form, cv: form.cv?.name ?? 'CV_Adjunto.pdf', fechaRegistro: new Date().toISOString() }
-        const records = JSON.parse(localStorage.getItem('aquachile-solicitudes') ?? '[]')
-        localStorage.setItem('aquachile-solicitudes', JSON.stringify([...records, record]))
-        setStatus({ type: 'success', message: 'Prueba completada (almacenado localmente).' })
-      }
+      Object.entries(fieldMap).forEach(([key, value]) => data.append(key, value))
+      data.append('cv', form.cv)
+      const result = await api.createApplication(data)
+      setStatus({ type: 'success', message: `¡Solicitud registrada! Tu código de seguimiento es ${result.codigo}.` })
       setForm(initialForm)
       event.currentTarget.reset()
     } catch (error) {
-      setStatus({ type: 'error', message: `Solicitud procesada con aviso: ${error.message}. Verifica que el agente esté encendido.` })
+      setStatus({ type: 'error', message: `${error.message}. Verifica que el servidor esté iniciado.` })
     }
   }
 
@@ -107,6 +85,8 @@ function PostulacionPage() {
               setForm({
                 nombre: 'Carlos Mendoza Silva',
                 identificador: '18.456.789-0',
+                email: 'carlos.mendoza@correo.demo',
+                telefono: '+56 9 8765 4321',
                 cargo: 'Operario de Centro de Cultivo',
                 centroTrabajo: 'Centro Melinka 04',
                 localidad: 'Melinka',
@@ -133,6 +113,8 @@ function PostulacionPage() {
               setForm({
                 nombre: 'Camila Soto Navarrete',
                 identificador: '16.782.341-K',
+                email: 'camila.soto@correo.demo',
+                telefono: '+56 9 7654 3210',
                 cargo: 'Jefe de Centro de Cultivo',
                 centroTrabajo: 'Piscicultura Calbuco',
                 localidad: 'Calbuco',
@@ -158,6 +140,8 @@ function PostulacionPage() {
           <div className="form-grid">
             <Field label="Nombre completo" name="nombre" value={form.nombre} onChange={update} required />
             <Field label="RUT o identificador" name="identificador" value={form.identificador} onChange={update} required />
+            <Field label="Correo electrónico" name="email" type="email" value={form.email} onChange={update} required />
+            <Field label="Teléfono" name="telefono" type="tel" value={form.telefono} onChange={update} required />
             <Field label="Cargo al que postula" required>
               <select name="cargo" value={form.cargo} onChange={update} required>
                 <option value="">Selecciona una opción</option>

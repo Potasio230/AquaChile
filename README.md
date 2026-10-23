@@ -83,8 +83,22 @@ La aplicación abrirá en: `http://localhost:5173/`
 
 ### 2. Iniciar el Backend & Servicios
 ```bash
-cd AquaChileAgente
+cd backend
+python3 -m venv .venv
+source .venv/bin/activate
 pip install -r requirements.txt
 python -m uvicorn api.app:app --host 127.0.0.1 --port 8000 --reload
 ```
 API y documentación Swagger en: `http://127.0.0.1:8000/docs`
+
+El modo local crea una base SQLite únicamente para que la demostración funcione
+sin depender de una instalación externa. El esquema oficial Oracle se mantiene
+en `database/` y debe ejecutarse en SQL Developer para la evaluación de base de
+datos.
+
+### 3. Probar el flujo completo
+
+1. Abre `http://localhost:5173/postulacion`, completa el formulario y adjunta un CV.
+2. Entra a `http://localhost:5173/acceso-interno`.
+3. Usa `rrhh@aquachile.demo` / `AquaChile2026`.
+4. Revisa la postulación y registra el resultado de la evaluación.
