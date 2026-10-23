@@ -43,7 +43,7 @@ function PostulacionPage() {
       setStatus({ type: 'error', message: 'El currículum debe ser PDF o Word y pesar como máximo 10 MB.' })
       return
     }
-    setStatus({ type: 'loading', message: 'Enviando solicitud y despachando correos…' })
+    setStatus({ type: 'loading', message: 'Enviando solicitud al servidor…' })
 
     try {
       const apiBackendUrl = 'http://127.0.0.1:8000/api/postulante/formulario'
@@ -73,18 +73,14 @@ function PostulacionPage() {
         body: JSON.stringify(payloadAgente)
       })
 
-      if (res.ok) {
-        setStatus({ type: 'success', message: '¡Solicitud registrada con éxito! Se enviaron las copias de correo a benjita1b4@gmail.com' })
-      } else {
-        const record = { ...form, cv: form.cv?.name ?? 'CV_Adjunto.pdf', fechaRegistro: new Date().toISOString() }
-        const records = JSON.parse(localStorage.getItem('aquachile-solicitudes') ?? '[]')
-        localStorage.setItem('aquachile-solicitudes', JSON.stringify([...records, record]))
-        setStatus({ type: 'success', message: 'Prueba completada (almacenado localmente).' })
-      }
+      if (!res.ok) throw new Error(`El servidor respondió con estado ${res.status}`)
+
+      setStatus({ type: 'success', message: 'El servidor recibió la solicitud.' })
       setForm(initialForm)
       event.currentTarget.reset()
     } catch (error) {
-      setStatus({ type: 'error', message: `Solicitud procesada con aviso: ${error.message}. Verifica que el agente esté encendido.` })
+      console.error('Error al enviar la solicitud:', error)
+      setStatus({ type: 'error', message: 'No se pudo enviar la solicitud. Revisa la conexión con el servidor e inténtalo nuevamente.' })
     }
   }
 

@@ -1,0 +1,31 @@
+.app-layout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.layout-main {
+  flex: 1 0 auto;
+}
+
+.not-found-page {
+  min-height: 70vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 120px 24px 64px;
+  text-align: center;
+}
+
+.not-found-page h1 {
+  margin: 0;
+  color: var(--navy);
+  font-size: clamp(2.25rem, 5vw, 4rem);
+}
+
+.not-found-page p:not(.section-kicker) {
+  margin: 0 0 12px;
+  color: var(--muted);
+}
