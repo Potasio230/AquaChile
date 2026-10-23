@@ -49,10 +49,30 @@ Despacho automático de comprobantes oficiales con la paleta de colores de AquaC
 ## Tecnologías y Arquitectura
 
 - **Frontend:** React 19, Vite, CSS moderno responsivo, Google Fonts (`PT Sans`).
+- **Diseño responsivo:** Bootstrap 5 y estilos propios con identidad AquaChile.
 - **Backend & APIs:** FastAPI / Python + Node.js Express.
 - **Motor de Notificaciones:** Python `smtplib` con plantillas HTML dinámicas (`templates/`).
 - **Procesamiento de Documentos:** PyMuPDF (`fitz`) para extracción y lectura de CVs en PDF.
 - **IA & Asistencia:** Arquitectura híbrida de soporte al evaluador con glosario técnico acuícola y asistente en tiempo real.
+
+### Organización del frontend
+
+```text
+src/
+├── components/   # Componentes reutilizables que reciben props
+├── data/         # Opciones y datos ficticios de la demostración
+├── hooks/        # Comportamientos reutilizables de React
+├── layouts/      # Estructuras pública e interna
+├── pages/        # Pantallas asociadas a las rutas
+├── services/     # Comunicación con la API
+└── utils/        # Validaciones independientes del formulario
+```
+
+`PublicLayout` contiene el portal, la postulación y el asistente. `InternalLayout`
+contiene el acceso del equipo y la gestión de evaluaciones. Los componentes
+`FormField`, `FormStatus`, `SummaryCard`, `StatusBadge` y `ApplicationTable`
+demuestran reutilización mediante propiedades, mientras que las páginas manejan
+los estados de carga, éxito, error y datos de formulario.
 
 ---
 

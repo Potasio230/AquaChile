@@ -1,11 +1,9 @@
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { api } from '../services/api'
-
-const states = [
-  ['POSTULADO', 'Postulado'], ['EN_REVISION', 'En revisión'], ['CITADO', 'Citado'],
-  ['EVALUADO', 'Evaluado'], ['APTO', 'Apto'], ['NO_APTO', 'No apto'], ['CANCELADO', 'Cancelado'],
-]
+import FormField from '../components/FormField'
+import FormStatus from '../components/FormStatus'
+import { evaluationStates } from '../data/evaluationOptions'
 
 function EvaluacionPage() {
   const { id } = useParams()
@@ -39,7 +37,7 @@ function EvaluacionPage() {
     <section className="internal-page evaluation-page">
       <div className="management-shell narrow-shell">
         <Link className="back-link" to="/gestion">← Volver a la bandeja</Link>
-        {status.type === 'error' && !application && <div className="form-status error">{status.message}</div>}
+        {status.type === 'error' && !application && <FormStatus status={status} />}
         {application && (
           <>
             <div className="management-heading compact-heading">
@@ -60,10 +58,10 @@ function EvaluacionPage() {
               </article>
               <form className="evaluation-card" onSubmit={submit}>
                 <h2>Registrar evaluación</h2>
-                <label className="field"><span>Estado del proceso</span><select value={form.estado} onChange={(e) => setForm({ ...form, estado: e.target.value })}>{states.map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></label>
-                <label className="field"><span>Resultado o recomendación</span><input value={form.resultado} onChange={(e) => setForm({ ...form, resultado: e.target.value })} placeholder="Ej.: Recomendado con observaciones" /></label>
-                <label className="field"><span>Informe / notas del psicólogo</span><textarea rows="9" value={form.nota_evaluacion} onChange={(e) => setForm({ ...form, nota_evaluacion: e.target.value })} placeholder="Registra aquí la síntesis de la entrevista…" /></label>
-                {status.message && <div className={`form-status ${status.type}`}>{status.message}</div>}
+                <FormField label="Estado del proceso"><select value={form.estado} onChange={(e) => setForm({ ...form, estado: e.target.value })}>{evaluationStates.map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></FormField>
+                <FormField label="Resultado o recomendación" value={form.resultado} onChange={(e) => setForm({ ...form, resultado: e.target.value })} placeholder="Ej.: Recomendado con observaciones" />
+                <FormField label="Informe / notas del psicólogo"><textarea rows="9" value={form.nota_evaluacion} onChange={(e) => setForm({ ...form, nota_evaluacion: e.target.value })} placeholder="Registra aquí la síntesis de la entrevista…" /></FormField>
+                <FormStatus status={status} />
                 <button className="submit-button" disabled={status.type === 'loading'}>{status.type === 'loading' ? 'Guardando…' : 'Guardar evaluación'}</button>
               </form>
             </div>

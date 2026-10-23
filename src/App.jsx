@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import AppLayout from './layouts/AppLayout'
+import PublicLayout from './layouts/PublicLayout'
+import InternalLayout from './layouts/InternalLayout'
 import HomePage from './pages/HomePage'
 import PostulacionPage from './pages/PostulacionPage'
 import LoginPage from './pages/LoginPage'
@@ -11,9 +12,11 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route element={<AppLayout />}>
+        <Route element={<PublicLayout />}>
           <Route path="/" element={<HomePage />} />
           <Route path="/postulacion" element={<PostulacionPage />} />
+        </Route>
+        <Route element={<InternalLayout />}>
           <Route path="/acceso-interno" element={<LoginPage />} />
           <Route element={<ProtectedRoute />}>
             <Route path="/gestion" element={<GestionPage />} />

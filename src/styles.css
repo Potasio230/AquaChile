@@ -94,6 +94,10 @@ h1 { margin: 18px 0 24px; font-size: clamp(3rem,6vw,5.7rem); line-height: .98; l
 .process-copy h2,.form-heading h2 { max-width: 700px; margin: 12px 0 22px; font-size: clamp(2.2rem,4vw,3.8rem); line-height: 1.08; letter-spacing: -.02em; color: var(--navy); }
 .process-copy h2 { color: #FFFFFF; text-shadow: 0 2px 12px rgba(0,0,0,.7); }
 .process-copy>p { max-width: 670px; color: rgba(255,255,255,.88); line-height: 1.75; font-size: 1.08rem; text-shadow: 0 2px 10px rgba(0,0,0,.75); }
+.steps { display: grid; gap: 12px; margin-top: 22px; }
+.steps div { display: flex; align-items: center; gap: 14px; }
+.steps strong { display: grid; place-items: center; width: 40px; height: 40px; flex: 0 0 40px; border: 1px solid rgba(255,255,255,.45); border-radius: 50%; color: var(--orange); }
+.steps span { color: white; font-weight: 700; }
 
 /* ------------------------------------------------------------- Formulario --
    Esta sección mantiene su propia paleta teal, independiente del navy del
@@ -120,6 +124,10 @@ h1 { margin: 18px 0 24px; font-size: clamp(3rem,6vw,5.7rem); line-height: .98; l
 .form-heading .section-kicker { color: #38bdf8; font-weight: 700; text-shadow: 0 2px 6px rgba(0,0,0,0.6); }
 .form-heading h2 { margin-inline: auto; color: #FFFFFF; text-shadow: 0 2px 12px rgba(0,0,0,0.7); }
 .form-heading p { color: #E0F2FE; line-height: 1.7; text-shadow: 0 2px 6px rgba(0,0,0,0.6); }
+.demo-actions { margin-top: 16px; }
+.demo-actions>span { align-self: center; color: #e0f2fe; font-size: .82rem; font-weight: 700; text-shadow: 0 2px 6px rgba(0,0,0,.6); }
+.demo-button { border: 1px solid rgba(255,255,255,.55); border-radius: 5px; padding: 8px 14px; background: rgba(255,255,255,.14); color: white; font-size: .78rem; font-weight: 700; cursor: pointer; }
+.demo-button:hover,.demo-button.featured { border-color: var(--orange); background: var(--orange); }
 /* Cristal esmerilado: la imagen marForm.jpg se ve a través de la tarjeta.
    Los inputs conservan su propio fondo opaco (#fbfdfc / white), así que bajar
    la opacidad no afecta la legibilidad de lo que se escribe — solo se tiñe el

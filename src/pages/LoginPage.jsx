@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { api } from '../services/api'
+import FormField from '../components/FormField'
+import FormStatus from '../components/FormStatus'
 
 function LoginPage() {
   const navigate = useNavigate()
@@ -28,15 +30,9 @@ function LoginPage() {
         <h1>Gestión de evaluaciones</h1>
         <p>Ingreso exclusivo para el equipo de Reclutamiento y psicólogos evaluadores.</p>
         <form onSubmit={submit}>
-          <label className="field">
-            <span>Correo corporativo</span>
-            <input type="email" value={credentials.email} onChange={(event) => setCredentials({ ...credentials, email: event.target.value })} required />
-          </label>
-          <label className="field">
-            <span>Contraseña</span>
-            <input type="password" value={credentials.clave} onChange={(event) => setCredentials({ ...credentials, clave: event.target.value })} required />
-          </label>
-          {status.message && <div className={`form-status ${status.type}`} role="status">{status.message}</div>}
+          <FormField label="Correo corporativo" type="email" value={credentials.email} onChange={(event) => setCredentials({ ...credentials, email: event.target.value })} required />
+          <FormField label="Contraseña" type="password" value={credentials.clave} onChange={(event) => setCredentials({ ...credentials, clave: event.target.value })} required />
+          <FormStatus status={status} />
           <button className="submit-button full-button" disabled={status.type === 'loading'}>
             {status.type === 'loading' ? 'Ingresando…' : 'Ingresar al sistema'}
           </button>

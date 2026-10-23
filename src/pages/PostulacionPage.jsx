@@ -1,31 +1,12 @@
 import { useState } from 'react'
 import { api } from '../services/api'
-
-const initialForm = {
-  nombre: '', identificador: '', email: '', telefono: '', cargo: '', centroTrabajo: '', localidad: '',
-  analista: '', correoAnalista: '', familiaCargo: '', area: '', turno: '',
-  fechaInforme: '', observaciones: '', cv: null,
-}
-
-const familias = ['Operativo', 'Técnico', 'Profesional', 'Supervisión o jefatura', 'Administrativo']
-const areas = ['Centro de cultivo', 'Piscicultura', 'Planta de proceso', 'Mantención', 'Calidad', 'Logística', 'Administración', 'Otra']
-const turnos = ['Jornada ordinaria', 'Sistema de turnos', '7x7', '10x10', '14x14', 'Otro']
-const cargos = ['Operario de Centro de Cultivo', 'Operador de Pontón', 'Buzo Acuicultor', 'Técnico en Acuicultura', 'Jefe de Centro de Cultivo', 'Supervisor de Producción', 'Operario de Planta de Proceso', 'Operador de Sala de Despiece', 'Técnico en Mantención', 'Electricista', 'Mecánico', 'Analista de Calidad', 'Encargado de Logística', 'Administrativo']
-const centros = ['Centro Melinka 04', 'Centro de Cultivo Punta Johnson', 'Centro de Cultivo Puqueldón', 'Piscicultura Calbuco', 'Piscicultura Río Pescado', 'Piscicultura Hollenberg', 'Planta de Proceso Puerto Montt', 'Planta de Proceso Natales', 'Oficina Corporativa Puerto Montt']
-const localidades = ['Calbuco', 'Chiloé', 'Melinka', 'Puerto Aysén', 'Puerto Montt', 'Puerto Natales', 'Punta Arenas', 'Temuco', 'Valdivia']
-
-function Field({ label, name, children, hint, ...props }) {
-  return (
-    <label className="field">
-      <span>{label}{props.required && <b aria-hidden="true"> *</b>}</span>
-      {children ?? <input name={name} {...props} />}
-      {hint && <small>{hint}</small>}
-    </label>
-  )
-}
+import FormField from '../components/FormField'
+import FormStatus from '../components/FormStatus'
+import { areas, cargos, centros, demoCandidates, familias, initialApplicationForm, localidades, turnos } from '../data/formOptions'
+import { validateApplication } from '../utils/validation'
 
 function PostulacionPage() {
-  const [form, setForm] = useState(initialForm)
+  const [form, setForm] = useState(initialApplicationForm)
   const [status, setStatus] = useState({ type: 'idle', message: '' })
 
   const update = ({ target }) => {
@@ -35,13 +16,9 @@ function PostulacionPage() {
 
   const handleSubmit = async (event) => {
     event.preventDefault()
-    const allowedTypes = [
-      'application/pdf',
-      'application/msword',
-      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-    ]
-    if (form.cv && form.cv instanceof File && (!allowedTypes.includes(form.cv.type) || form.cv.size > 10 * 1024 * 1024)) {
-      setStatus({ type: 'error', message: 'El currículum debe ser PDF o Word y pesar como máximo 10 MB.' })
+    const validationMessage = validateApplication(form)
+    if (validationMessage) {
+      setStatus({ type: 'error', message: validationMessage })
       return
     }
     setStatus({ type: 'loading', message: 'Registrando solicitud…' })
@@ -59,7 +36,7 @@ function PostulacionPage() {
       data.append('cv', form.cv)
       const result = await api.createApplication(data)
       setStatus({ type: 'success', message: `¡Solicitud registrada! Tu código de seguimiento es ${result.codigo}.` })
-      setForm(initialForm)
+      setForm(initialApplicationForm)
       event.currentTarget.reset()
     } catch (error) {
       setStatus({ type: 'error', message: `${error.message}. Verifica que el servidor esté iniciado.` })
@@ -73,64 +50,21 @@ function PostulacionPage() {
         <h2>Evaluación psicolaboral</h2>
         <p>Completa los campos obligatorios. Para las pruebas del proyecto, utiliza únicamente información ficticia.</p>
 
-        <div style={{ marginTop: '16px', display: 'flex', gap: '10px', flexWrap: 'wrap', justifyContent: 'center' }}>
-          <span style={{ fontSize: '13px', alignSelf: 'center', color: '#E0F2FE', fontWeight: 'bold', textShadow: '0 2px 6px rgba(0,0,0,0.6)' }}>Autorellenar prueba:</span>
-          <button
-            type="button"
-            style={{
-              background: 'rgba(255,255,255,0.12)', color: 'white', border: '1px solid rgba(255,255,255,0.5)', borderRadius: '4px',
-              padding: '7px 14px', fontSize: '12px', fontWeight: 'bold', cursor: 'pointer'
-            }}
-            onClick={() => {
-              setForm({
-                nombre: 'Carlos Mendoza Silva',
-                identificador: '18.456.789-0',
-                email: 'carlos.mendoza@correo.demo',
-                telefono: '+56 9 8765 4321',
-                cargo: 'Operario de Centro de Cultivo',
-                centroTrabajo: 'Centro Melinka 04',
-                localidad: 'Melinka',
-                analista: 'Benjamín Reclutador',
-                correoAnalista: 'benjita1b4@gmail.com',
-                familiaCargo: 'Operativo',
-                area: 'Centro de cultivo',
-                turno: '14x14',
-                fechaInforme: '2026-10-15',
-                observaciones: 'Experiencia previa de 3 años en pontón marítimo y alimentación de salmones.',
-                cv: new File(['CV Carlos Mendoza - Operario Pontón'], 'CV_Carlos_Mendoza.pdf', { type: 'application/pdf' })
-              })
-            }}
-          >
-            Candidato 1 (Carlos · Operario 14x14)
-          </button>
-          <button
-            type="button"
-            style={{
-              background: '#F28C28', color: 'white', border: 'none', borderRadius: '4px',
-              padding: '7px 14px', fontSize: '12px', fontWeight: 'bold', cursor: 'pointer'
-            }}
-            onClick={() => {
-              setForm({
-                nombre: 'Camila Soto Navarrete',
-                identificador: '16.782.341-K',
-                email: 'camila.soto@correo.demo',
-                telefono: '+56 9 7654 3210',
-                cargo: 'Jefe de Centro de Cultivo',
-                centroTrabajo: 'Piscicultura Calbuco',
-                localidad: 'Calbuco',
-                analista: 'Benjamín Reclutador',
-                correoAnalista: 'benjita1b4@gmail.com',
-                familiaCargo: 'Supervisión o jefatura',
-                area: 'Piscicultura',
-                turno: '14x14',
-                fechaInforme: '2026-10-18',
-                observaciones: 'Ingeniera en Acuicultura, 5 años liderando faenas de biomasa y estándares sanitarios.',
-                cv: new File(['CV Camila Soto - Jefa de Centro'], 'CV_Camila_Soto.pdf', { type: 'application/pdf' })
-              })
-            }}
-          >
-            Candidato 2 (Camila · Jefa Centro)
-          </button>
+        <div className="demo-actions d-flex flex-wrap gap-2 justify-content-center">
+          <span>Autorellenar prueba:</span>
+          {demoCandidates.map((candidate, index) => (
+            <button
+              key={candidate.label}
+              type="button"
+              className={index === 1 ? 'demo-button featured' : 'demo-button'}
+              onClick={() => setForm({
+                ...candidate.values,
+                cv: new File(['Currículum ficticio para demostración'], `CV_${candidate.values.nombre.replaceAll(' ', '_')}.pdf`, { type: 'application/pdf' }),
+              })}
+            >
+              {candidate.label}
+            </button>
+          ))}
         </div>
       </div>
 
@@ -138,71 +72,71 @@ function PostulacionPage() {
         <fieldset>
           <legend><span>1</span> Datos del candidato</legend>
           <div className="form-grid">
-            <Field label="Nombre completo" name="nombre" value={form.nombre} onChange={update} required />
-            <Field label="RUT o identificador" name="identificador" value={form.identificador} onChange={update} required />
-            <Field label="Correo electrónico" name="email" type="email" value={form.email} onChange={update} required />
-            <Field label="Teléfono" name="telefono" type="tel" value={form.telefono} onChange={update} required />
-            <Field label="Cargo al que postula" required>
+            <FormField label="Nombre completo" name="nombre" value={form.nombre} onChange={update} required />
+            <FormField label="RUT o identificador" name="identificador" value={form.identificador} onChange={update} required />
+            <FormField label="Correo electrónico" name="email" type="email" value={form.email} onChange={update} required />
+            <FormField label="Teléfono" name="telefono" type="tel" value={form.telefono} onChange={update} required />
+            <FormField label="Cargo al que postula" required>
               <select name="cargo" value={form.cargo} onChange={update} required>
                 <option value="">Selecciona una opción</option>
                 {cargos.map((item) => <option key={item}>{item}</option>)}
               </select>
-            </Field>
-            <Field label="Instalación, planta o centro" required>
+            </FormField>
+            <FormField label="Instalación, planta o centro" required>
               <select name="centroTrabajo" value={form.centroTrabajo} onChange={update} required>
                 <option value="">Selecciona una opción</option>
                 {centros.map((item) => <option key={item}>{item}</option>)}
               </select>
-            </Field>
-            <Field label="Localidad" required>
+            </FormField>
+            <FormField label="Localidad" required>
               <select name="localidad" value={form.localidad} onChange={update} required>
                 <option value="">Selecciona una opción</option>
                 {localidades.map((item) => <option key={item}>{item}</option>)}
               </select>
-            </Field>
+            </FormField>
           </div>
         </fieldset>
 
         <fieldset>
           <legend><span>2</span> Datos de la solicitud</legend>
           <div className="form-grid">
-            <Field label="Nombre del analista" name="analista" value={form.analista} onChange={update} required />
-            <Field label="Correo del analista" name="correoAnalista" type="email" value={form.correoAnalista} onChange={update} required />
-            <Field label="Familia de cargo" required>
+            <FormField label="Nombre del analista" name="analista" value={form.analista} onChange={update} required />
+            <FormField label="Correo del analista" name="correoAnalista" type="email" value={form.correoAnalista} onChange={update} required />
+            <FormField label="Familia de cargo" required>
               <select name="familiaCargo" value={form.familiaCargo} onChange={update} required>
                 <option value="">Selecciona una opción</option>
                 {familias.map((item) => <option key={item}>{item}</option>)}
               </select>
-            </Field>
-            <Field label="Área" required>
+            </FormField>
+            <FormField label="Área" required>
               <select name="area" value={form.area} onChange={update} required>
                 <option value="">Selecciona una opción</option>
                 {areas.map((item) => <option key={item}>{item}</option>)}
               </select>
-            </Field>
-            <Field label="Sistema de turno" required>
+            </FormField>
+            <FormField label="Sistema de turno" required>
               <select name="turno" value={form.turno} onChange={update} required>
                 <option value="">Selecciona una opción</option>
                 {turnos.map((item) => <option key={item}>{item}</option>)}
               </select>
-            </Field>
-            <Field label="Fecha requerida para el informe" name="fechaInforme" type="date" value={form.fechaInforme} onChange={update} required />
+            </FormField>
+            <FormField label="Fecha requerida para el informe" name="fechaInforme" type="date" value={form.fechaInforme} onChange={update} required />
           </div>
         </fieldset>
 
         <fieldset>
           <legend><span>3</span> Antecedentes adicionales</legend>
           <div className="form-grid">
-            <Field label="Observaciones" hint="No incluyas información sensible que no sea necesaria.">
+            <FormField label="Observaciones" hint="No incluyas información sensible que no sea necesaria.">
               <textarea name="observaciones" value={form.observaciones} onChange={update} rows="4" />
-            </Field>
-            <Field label="Currículum del candidato" required hint="Formato PDF o Word. Máximo 10 MB.">
+            </FormField>
+            <FormField label="Currículum del candidato" required hint="Formato PDF o Word. Máximo 10 MB.">
               <input name="cv" type="file" accept=".pdf,.doc,.docx" onChange={update} required />
-            </Field>
+            </FormField>
           </div>
         </fieldset>
 
-        {status.message && <div className={`form-status ${status.type}`} role="status">{status.message}</div>}
+        <FormStatus status={status} />
         <div className="form-actions">
           <p><b>*</b> Campos obligatorios</p>
           <button className="submit-button" type="submit" disabled={status.type === 'loading'}>

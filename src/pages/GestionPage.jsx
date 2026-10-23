@@ -1,11 +1,9 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { api } from '../services/api'
-
-const statusLabels = {
-  POSTULADO: 'Postulado', EN_REVISION: 'En revisión', CITADO: 'Citado',
-  EVALUADO: 'Evaluado', APTO: 'Apto', NO_APTO: 'No apto', CANCELADO: 'Cancelado',
-}
+import SummaryCard from '../components/SummaryCard'
+import ApplicationTable from '../components/ApplicationTable'
+import FormStatus from '../components/FormStatus'
 
 function GestionPage() {
   const navigate = useNavigate()
@@ -51,9 +49,9 @@ function GestionPage() {
         </div>
 
         <div className="summary-grid">
-          <article><span>Total de solicitudes</span><strong>{summary.total}</strong></article>
-          <article><span>Pendientes</span><strong>{summary.pendientes}</strong></article>
-          <article><span>Evaluadas</span><strong>{summary.evaluados}</strong></article>
+          <SummaryCard label="Total de solicitudes" value={summary.total} />
+          <SummaryCard label="Pendientes" value={summary.pendientes} />
+          <SummaryCard label="Evaluadas" value={summary.evaluados} />
         </div>
 
         <div className="records-card">
@@ -64,27 +62,9 @@ function GestionPage() {
             </div>
             <input aria-label="Buscar postulante" placeholder="Buscar por nombre, RUT, cargo…" value={query} onChange={(event) => setQuery(event.target.value)} />
           </div>
-          {status.message && <div className={`form-status ${status.type}`}>{status.message}</div>}
+          <FormStatus status={status} />
           {!status.message && filtered.length === 0 && <div className="empty-state">Aún no hay postulaciones para mostrar.</div>}
-          {filtered.length > 0 && (
-            <div className="table-scroll">
-              <table>
-                <thead><tr><th>Código</th><th>Candidato</th><th>Cargo</th><th>Localidad</th><th>Estado</th><th></th></tr></thead>
-                <tbody>
-                  {filtered.map((item) => (
-                    <tr key={item.id}>
-                      <td><strong>{item.codigo}</strong></td>
-                      <td>{item.nombre_completo}<small>{item.rut}</small></td>
-                      <td>{item.cargo}<small>{item.centro_trabajo}</small></td>
-                      <td>{item.localidad}</td>
-                      <td><span className={`status-badge status-${item.estado.toLowerCase()}`}>{statusLabels[item.estado] || item.estado}</span></td>
-                      <td><Link className="table-action" to={`/gestion/evaluacion/${item.id}`}>Revisar</Link></td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
+          {filtered.length > 0 && <ApplicationTable applications={filtered} />}
         </div>
       </div>
     </section>
