@@ -1,4 +1,7 @@
 fastapi==0.115.12
 uvicorn[standard]==0.34.2
 python-multipart==0.0.20
+pymongo==4.15.3
+dnspython==2.9.0
+python-dotenv==1.2.1
 

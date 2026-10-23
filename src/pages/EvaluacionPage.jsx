@@ -33,6 +33,24 @@ function EvaluacionPage() {
     }
   }
 
+  const downloadCv = async () => {
+    setStatus({ type: 'loading', message: 'Preparando currículum…' })
+    try {
+      const file = await api.downloadCv(id)
+      const url = URL.createObjectURL(file)
+      const link = document.createElement('a')
+      link.href = url
+      link.download = application.cv_nombre || 'curriculum'
+      document.body.appendChild(link)
+      link.click()
+      link.remove()
+      URL.revokeObjectURL(url)
+      setStatus({ type: 'idle', message: '' })
+    } catch (error) {
+      setStatus({ type: 'error', message: error.message })
+    }
+  }
+
   return (
     <section className="internal-page evaluation-page">
       <div className="management-shell narrow-shell">
@@ -52,7 +70,14 @@ function EvaluacionPage() {
                   <div><dt>Localidad y turno</dt><dd>{application.localidad} · {application.turno}</dd></div>
                   <div><dt>Analista</dt><dd>{application.analista}<br />{application.correo_analista}</dd></div>
                   <div><dt>Fecha requerida</dt><dd>{application.fecha_informe}</dd></div>
-                  <div><dt>Currículum</dt><dd>{application.cv_nombre}</dd></div>
+                  <div>
+                    <dt>Currículum</dt>
+                    <dd>
+                      <button className="cv-download-button" type="button" onClick={downloadCv} disabled={status.type === 'loading'}>
+                        Descargar {application.cv_nombre}
+                      </button>
+                    </dd>
+                  </div>
                 </dl>
                 {application.observaciones && <div className="candidate-notes"><strong>Observaciones de la solicitud</strong><p>{application.observaciones}</p></div>}
               </article>

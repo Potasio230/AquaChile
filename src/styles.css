@@ -226,6 +226,9 @@ td small { display: block; margin-top: 4px; color: #718398; }
 .candidate-card dl div { padding: 14px 0; border-bottom: 1px solid var(--line); }
 .candidate-card dt { color: #6b7e91; font-size: .82rem; font-weight: 700; text-transform: uppercase; }
 .candidate-card dd { margin: 5px 0 0; color: #213f5b; line-height: 1.5; }
+.cv-download-button { border: 0; padding: 0; background: transparent; color: #006e80; font: inherit; font-weight: 700; text-align: left; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+.cv-download-button:hover { color: var(--orange-dark); }
+.cv-download-button:disabled { opacity: .6; cursor: wait; }
 .candidate-notes { margin-top: 24px; padding: 18px; border-radius: 8px; background: #f1f6fa; color: #294a66; }
 .candidate-notes p { margin: 7px 0 0; line-height: 1.55; }
 .evaluation-card { display: flex; flex-direction: column; gap: 20px; }

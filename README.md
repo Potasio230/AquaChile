@@ -78,7 +78,7 @@ los estados de carga, éxito, error y datos de formulario.
 
 ## Tareas Pendientes y Próximos Pasos
 
-- [ ] **Base de Datos Relacional:** Implementar el esquema relacional definitivo (PostgreSQL / Oracle) reemplazando la persistencia temporal en disco/memoria.
+- [x] **Base de Datos MongoDB:** Persistencia de postulaciones, evaluaciones, auditoría y currículums mediante MongoDB Atlas y GridFS.
 - [ ] **Bandeja de Gestión Interna (Dashboard RRHH):** Visualización tabular de candidatos con filtros avanzados por centro de cultivo, localidad, turno y analista asignado.
 - [ ] **Pipeline de Estados:** Gestión del ciclo de vida del candidato (*Postulado → En Revisión → Citado → Evaluado → Apto/No Apto*).
 - [ ] **Módulo Psicolaboral del Evaluador:** Conectar el pre-filtro de compatibilidad del CV con la cabina de entrevista del psicólogo.
@@ -111,10 +111,9 @@ python -m uvicorn api.app:app --host 127.0.0.1 --port 8000 --reload
 ```
 API y documentación Swagger en: `http://127.0.0.1:8000/docs`
 
-El modo local crea una base SQLite únicamente para que la demostración funcione
-sin depender de una instalación externa. El esquema oficial Oracle se mantiene
-en `database/` y debe ejecutarse en SQL Developer para la evaluación de base de
-datos.
+La configuración recomendada utiliza MongoDB Atlas. El modo SQLite se conserva
+únicamente para que la demostración local funcione sin Internet. Consulta
+`backend/README.md` para configurar la cadena privada de conexión.
 
 ### 3. Probar el flujo completo
 
