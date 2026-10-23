@@ -81,6 +81,8 @@ npm run dev
 ```
 La aplicación abrirá en: `http://localhost:5173/`
 
+El formulario envía un `POST` multipart al endpoint definido por `VITE_API_URL` (por defecto, `http://127.0.0.1:8000/api/postulante/formulario`). Incluye el campo `solicitud` con el JSON de antecedentes y `cv` con el archivo. El backend debe aceptar ese formato; una respuesta HTTP exitosa confirma la recepción por el servidor, pero no garantiza por sí sola que los correos se hayan despachado.
+
 ### 2. Iniciar el Backend & Servicios
 ```bash
 cd AquaChileAgente
