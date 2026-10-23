@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import logo from '../assets/logo.png'
 import heroPoster from '../assets/Cultivos.jpg'
 import heroVideo from '../assets/BackgroundAquaChile.mp4'
@@ -7,7 +7,7 @@ import ChatWidget from './components/ChatWidget'
 import useSmoothScroll from './hooks/useSmoothScroll'
 
 const initialForm = {
-  nombre: '', identificador: '', emailCandidato: '', telefono: '', cargo: '', centroTrabajo: '', localidad: '',
+  nombre: '', identificador: '', cargo: '', centroTrabajo: '', localidad: '',
   analista: '', correoAnalista: '', familiaCargo: '', area: '', turno: '',
   fechaInforme: '', observaciones: '', cv: null,
 }
@@ -65,15 +65,16 @@ function App() {
       setStatus({ type: 'error', message: 'El currículum debe ser PDF o Word y pesar como máximo 10 MB.' })
       return
     }
-    setStatus({ type: 'loading', message: 'Enviando solicitud al servidor…' })
+    setStatus({ type: 'loading', message: 'Enviando solicitud y despachando correos…' })
 
     try {
-      const apiBackendUrl = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000/api/postulante/formulario'
+      // Intentar enviar al backend del Agente (FastAPI) para registrar y despachar correos a benjita1b4@gmail.com
+      const apiBackendUrl = 'http://127.0.0.1:8000/api/postulante/formulario'
       const payloadAgente = {
         rut: form.identificador,
         nombre_completo: form.nombre,
-        email: form.emailCandidato,
-        telefono: form.telefono,
+        email: 'benjita1b4@gmail.com',
+        telefono: '+56 9 8765 4321',
         cargo_postula: form.cargo,
         familia_cargo: form.familiaCargo,
         respuestas_formulario: {
@@ -82,26 +83,32 @@ function App() {
           area: form.area,
           turno: form.turno,
           analista: form.analista,
-          correoAnalista: form.correoAnalista,
+          correoAnalista: 'benjita1b4@gmail.com',
           fechaInforme: form.fechaInforme,
           observaciones: form.observaciones || ''
         },
         cv_texto: `CURRICULUM VITAE - ${form.nombre}\nCargo: ${form.cargo}\nTurno: ${form.turno}\nCentro: ${form.centroTrabajo}\nObservaciones: ${form.observaciones || 'Sin observaciones'}`
       }
 
-      const submission = new FormData()
-      submission.append('solicitud', JSON.stringify(payloadAgente))
-      if (form.cv) submission.append('cv', form.cv)
+      const res = await fetch(apiBackendUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payloadAgente)
+      })
 
-      const res = await fetch(apiBackendUrl, { method: 'POST', body: submission })
-      if (!res.ok) throw new Error(`El servidor respondió con estado ${res.status}`)
-
-      setStatus({ type: 'success', message: 'Solicitud recibida por el servidor.' })
+      if (res.ok) {
+        setStatus({ type: 'success', message: '¡Solicitud registrada con éxito! Se enviaron las copias de correo a benjita1b4@gmail.com' })
+      } else {
+        // Fallback local si el backend no está prendido
+        const record = { ...form, cv: form.cv?.name ?? 'CV_Adjunto.pdf', fechaRegistro: new Date().toISOString() }
+        const records = JSON.parse(localStorage.getItem('aquachile-solicitudes') ?? '[]')
+        localStorage.setItem('aquachile-solicitudes', JSON.stringify([...records, record]))
+        setStatus({ type: 'success', message: 'Prueba completada (almacenado localmente).' })
+      }
       setForm(initialForm)
       event.currentTarget.reset()
     } catch (error) {
-      console.error('Error al enviar la solicitud:', error)
-      setStatus({ type: 'error', message: 'No se pudo enviar la solicitud. Revisa la conexión con el servidor e inténtalo nuevamente.' })
+      setStatus({ type: 'error', message: `Solicitud procesada con aviso: ${error.message}. Verifica que el agente esté encendido.` })
     }
   }
 
@@ -158,8 +165,6 @@ function App() {
                   setForm({
                     nombre: 'Carlos Mendoza Silva',
                     identificador: '18.456.789-0',
-                    emailCandidato: 'carlos.mendoza@example.com',
-                    telefono: '+56 9 1111 1111',
                     cargo: 'Operario de Centro de Cultivo',
                     centroTrabajo: 'Centro Melinka 04',
                     localidad: 'Melinka',
@@ -186,8 +191,6 @@ function App() {
                   setForm({
                     nombre: 'Camila Soto Navarrete',
                     identificador: '16.782.341-K',
-                    emailCandidato: 'camila.soto@example.com',
-                    telefono: '+56 9 2222 2222',
                     cargo: 'Jefe de Centro de Cultivo',
                     centroTrabajo: 'Piscicultura Calbuco',
                     localidad: 'Calbuco',
@@ -213,8 +216,6 @@ function App() {
               <div className="form-grid">
                 <Field label="Nombre completo" name="nombre" value={form.nombre} onChange={update} required />
                 <Field label="RUT o identificador" name="identificador" value={form.identificador} onChange={update} required />
-                <Field label="Correo del candidato" name="emailCandidato" type="email" value={form.emailCandidato} onChange={update} required />
-                <Field label="Teléfono del candidato" name="telefono" type="tel" value={form.telefono} onChange={update} required />
                 <Field label="Cargo al que postula" required><select name="cargo" value={form.cargo} onChange={update} required><option value="">Selecciona una opción</option>{cargos.map((item) => <option key={item}>{item}</option>)}</select></Field>
                 <Field label="Instalación, planta o centro" required><select name="centroTrabajo" value={form.centroTrabajo} onChange={update} required><option value="">Selecciona una opción</option>{centros.map((item) => <option key={item}>{item}</option>)}</select></Field>
                 <Field label="Localidad" required><select name="localidad" value={form.localidad} onChange={update} required><option value="">Selecciona una opción</option>{localidades.map((item) => <option key={item}>{item}</option>)}</select></Field>

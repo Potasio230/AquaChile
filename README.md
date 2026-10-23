@@ -4,7 +4,7 @@ Plataforma web para la digitalización, centralización y automatización del pr
 
 ---
 
-## 👥 Equipo y Distribución de Roles
+## Equipo y Distribución de Roles
 
 | Integrante | Rol Principal | Responsabilidades |
 |---|---|---|
@@ -14,7 +14,7 @@ Plataforma web para la digitalización, centralización y automatización del pr
 
 ---
 
-## 📸 Vistas de la Plataforma
+## Vistas de la Plataforma
 
 ### 1. Portal de Inicio y Marca AquaChile
 Portal público institucional con video de fondo, navegación corporativa y presentación de las etapas de postulación.
@@ -46,7 +46,7 @@ Despacho automático de comprobantes oficiales con la paleta de colores de AquaC
 
 ---
 
-## 🛠️ Tecnologías y Arquitectura
+## Tecnologías y Arquitectura
 
 - **Frontend:** React 19, Vite, CSS moderno responsivo, Google Fonts (`PT Sans`).
 - **Backend & APIs:** FastAPI / Python + Node.js Express.
@@ -56,7 +56,7 @@ Despacho automático de comprobantes oficiales con la paleta de colores de AquaC
 
 ---
 
-## 📌 Tareas Pendientes y Próximos Pasos
+## Tareas Pendientes y Próximos Pasos
 
 - [ ] **Base de Datos Relacional:** Implementar el esquema relacional definitivo (PostgreSQL / Oracle) reemplazando la persistencia temporal en disco/memoria.
 - [ ] **Bandeja de Gestión Interna (Dashboard RRHH):** Visualización tabular de candidatos con filtros avanzados por centro de cultivo, localidad, turno y analista asignado.
@@ -67,7 +67,7 @@ Despacho automático de comprobantes oficiales con la paleta de colores de AquaC
 
 ---
 
-## 🚀 Puesta en Marcha Local
+## Puesta en Marcha Local
 
 ### Requisitos
 - Node.js (v18+)
