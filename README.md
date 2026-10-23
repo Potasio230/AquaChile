@@ -122,3 +122,14 @@ datos.
 2. Entra a `http://localhost:5173/acceso-interno`.
 3. Usa `rrhh@aquachile.demo` / `AquaChile2026`.
 4. Revisa la postulación y registra el resultado de la evaluación.
+
+### 4. Ejecutar pruebas frontend
+
+```bash
+npm test
+npm run test:coverage
+```
+
+La suite contiene diez casos con Vitest, React Testing Library y mocks de la API.
+El alcance y los resultados esperados están documentados en
+`docs/COBERTURA_TESTING.md`.

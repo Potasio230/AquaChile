@@ -16,6 +16,7 @@ function PostulacionPage() {
 
   const handleSubmit = async (event) => {
     event.preventDefault()
+    const formElement = event.currentTarget
     const validationMessage = validateApplication(form)
     if (validationMessage) {
       setStatus({ type: 'error', message: validationMessage })
@@ -37,7 +38,7 @@ function PostulacionPage() {
       const result = await api.createApplication(data)
       setStatus({ type: 'success', message: `¡Solicitud registrada! Tu código de seguimiento es ${result.codigo}.` })
       setForm(initialApplicationForm)
-      event.currentTarget.reset()
+      formElement.reset()
     } catch (error) {
       setStatus({ type: 'error', message: `${error.message}. Verifica que el servidor esté iniciado.` })
     }
