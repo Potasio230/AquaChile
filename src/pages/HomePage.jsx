@@ -42,17 +42,11 @@ function HomePage() {
         <div className="salmon-visual">
           <img src={salmon} alt="Salmón AquaChile" />
         </div>
-        <div className="process-copy">
-          <span className="section-kicker">Un proceso conectado</span>
+        <div className="process-copy" style={{ textAlign: 'center' }}>
           <h2>La información correcta, desde el primer paso.</h2>
           <p>
             Esta solicitud reúne los antecedentes necesarios para preparar la evaluación y activar el flujo automatizado del equipo de Reclutamiento y Selección.
           </p>
-          <div style={{ marginTop: '32px' }}>
-            <Link className="primary-button" to="/postulacion">
-              Ir al formulario de evaluación
-            </Link>
-          </div>
         </div>
       </section>
     </>

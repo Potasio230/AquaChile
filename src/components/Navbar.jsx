@@ -48,9 +48,9 @@ function Navbar() {
       <nav className={menuOpen ? 'open' : ''} aria-label="Navegación principal">
         <Link to="/">Inicio</Link>
         {isHome ? (
-          <a href="#proceso">Proceso</a>
+          <a href="#proceso">¿Cómo funciona?</a>
         ) : (
-          <Link to="/#proceso">Proceso</Link>
+          <Link to="/#proceso">¿Cómo funciona?</Link>
         )}
         <Link className="nav-cta" to="/postulacion">
           Nueva evaluación
