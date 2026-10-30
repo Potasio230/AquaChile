@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import { Link, NavLink, useLocation } from 'react-router-dom'
 import logo from '../../assets/logo.png'
 
 function Navbar() {
@@ -46,15 +46,15 @@ function Navbar() {
         <span />
       </button>
       <nav className={menuOpen ? 'open' : ''} aria-label="Navegación principal">
-        <Link to="/">Inicio</Link>
+        <NavLink to="/" end>Inicio</NavLink>
         {isHome ? (
           <a href="#proceso">¿Cómo funciona?</a>
         ) : (
           <Link to="/#proceso">¿Cómo funciona?</Link>
         )}
-        <Link className="nav-cta" to="/postulacion">
+        <NavLink className="nav-cta" to="/postulacion">
           Nueva evaluación
-        </Link>
+        </NavLink>
       </nav>
     </header>
   )

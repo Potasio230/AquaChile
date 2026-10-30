@@ -34,7 +34,9 @@ section[id] { scroll-margin-top: 82px; }
 .site-header.solid { background: var(--navy); box-shadow: 0 4px 16px rgba(0, 34, 68, 0.18); }
 .brand img { width: 155px; display: block; filter: brightness(0) invert(1); }
 nav { display: flex; align-items: center; gap: 34px; font-weight: 600; }
+.site-header nav a.active:not(.nav-cta) { text-decoration: underline; text-underline-offset: 6px; }
 .nav-cta { border: 1px solid rgba(255,255,255,.65); border-radius: 999px; padding: 11px 21px; }
+.site-header nav .nav-cta.active { border-color: white; background: rgba(255,255,255,.14); }
 .menu-button { display: none; border: 0; background: transparent; }
 .menu-button span { width: 25px; height: 2px; display: block; margin: 5px; background: white; }
 

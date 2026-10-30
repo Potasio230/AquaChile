@@ -50,8 +50,8 @@ function PostulacionPage() {
       const payloadAgente = {
         rut: form.identificador,
         nombre_completo: form.nombre,
-        email: 'benjita1b4@gmail.com',
-        telefono: '+56 9 8765 4321',
+        email: form.correoAnalista,
+        telefono: '',
         cargo_postula: form.cargo,
         familia_cargo: form.familiaCargo,
         respuestas_formulario: {
@@ -60,7 +60,7 @@ function PostulacionPage() {
           area: form.area,
           turno: form.turno,
           analista: form.analista,
-          correoAnalista: 'benjita1b4@gmail.com',
+          correoAnalista: form.correoAnalista,
           fechaInforme: form.fechaInforme,
           observaciones: form.observaciones || ''
         },
