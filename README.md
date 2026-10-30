@@ -68,84 +68,33 @@ El repositorio incluye plantillas HTML para los mensajes previstos en el flujo:
 
 ## Tecnologías y Arquitectura
 
-| Área | Tecnología |
-| --- | --- |
-| Interfaz | React, React DOM y Vite |
-| Estilos | CSS responsivo y Google Fonts (`PT Sans`) |
-| API y asistente | FastAPI / Python y Node.js Express según la arquitectura documentada; backend externo a este repositorio |
-| Notificaciones | Plantillas HTML; el README original describe despacho SMTP desde Python |
-| Base de datos | Oracle Database y PL/SQL en `database/` |
-| Documentos | PDF de ejemplo en `cvs_ejemplo/`; el procesamiento automático requiere backend |
+- **Frontend:** React 19, Vite, CSS moderno responsivo, Google Fonts (`PT Sans`).
+- **Diseño responsivo:** Bootstrap 5 y estilos propios con identidad AquaChile.
+- **Backend incluido:** FastAPI / Python, con MongoDB Atlas o SQLite local.
+- **Notificaciones:** plantillas HTML en `templates/`; el envío SMTP no está conectado al backend incluido.
+- **Documentos:** carga y descarga autenticada de CVs mediante GridFS en MongoDB.
+- **Asistente:** interfaz de preguntas frecuentes; el servicio de IA externo no forma parte de la API incluida.
 
-## Cómo ejecutar
-
-### Requisitos
-
-- **Node.js 18 o superior** y npm.
-- Un navegador web actualizado.
-- Para conectar las funciones del servidor, el backend FastAPI debe ejecutarse por separado en el puerto `8000` o debe actualizarse la URL en el frontend.
-- Para instalar el módulo de base de datos: acceso a Oracle Database y SQL Developer, SQLcl o SQL*Plus.
-
-### Opción A — Desarrollo local
-
-Desde la carpeta raíz de este repositorio:
-
-```bash
-npm install
-npm run dev
-```
-
-Vite mostrará en la terminal la dirección local, normalmente `http://localhost:5173/`.
-
-Para generar una versión compilada del frontend:
-
-```bash
-npm run build
-```
-
-Los archivos generados quedan en `dist/`.
-
-### Backend y servicios
-
-El README original documenta un servicio FastAPI en `AquaChileAgente`, con esta forma de inicio:
-
-```bash
-cd AquaChileAgente
-pip install -r requirements.txt
-python -m uvicorn api.app:app --host 127.0.0.1 --port 8000 --reload
-```
-
-Ese directorio no está incluido en este repositorio. Si el backend está disponible por separado, inicia su API y revisa la documentación en `http://127.0.0.1:8000/docs`. El frontend actual usa `http://127.0.0.1:8000/api/postulante/formulario` para el formulario y `http://127.0.0.1:8000/api/chat/consulta` para el chat.
-
-### Base de datos Oracle
-
-Los scripts del módulo PL/SQL y su orden de ejecución están documentados en [`database/README.md`](database/README.md). Se ejecutan desde Oracle SQL Developer, SQLcl o SQL*Plus.
-
-## Estructura del Proyecto
+### Organización del frontend
 
 ```text
-.
-├── assets/                    # Logos, imágenes y video de la página
-├── cvs_ejemplo/               # CV ficticios para demostración
-├── database/                  # Esquema, paquetes, triggers y pruebas PL/SQL
-│   ├── packages/
-│   ├── pruebas/
-│   ├── schema/
-│   └── triggers/
-├── docs/screenshots/          # Capturas de las vistas y del correo
-├── src/
-│   ├── components/            # Componentes compartidos, incluido el chatbot
-│   ├── hooks/                 # Hooks de interfaz
-│   ├── layouts/               # Estructuras de página
-│   ├── pages/                 # Vistas de inicio y postulación
-│   ├── App.jsx                # Aplicación principal
-│   ├── main.jsx               # Punto de entrada de React
-│   └── styles.css             # Estilos globales
-├── templates/                 # Plantillas HTML de correo
-├── index.html
-├── package.json
-└── vite.config.js
+src/
+├── components/   # Componentes reutilizables que reciben props
+├── data/         # Opciones y datos ficticios de la demostración
+├── hooks/        # Comportamientos reutilizables de React
+├── layouts/      # Estructuras pública e interna
+├── pages/        # Pantallas asociadas a las rutas
+├── services/     # Comunicación con la API
+└── utils/        # Validaciones independientes del formulario
 ```
+
+`PublicLayout` contiene el portal, la postulación y el asistente. `InternalLayout`
+contiene el acceso del equipo y la gestión de evaluaciones. Los componentes
+`FormField`, `FormStatus`, `SummaryCard`, `StatusBadge` y `ApplicationTable`
+demuestran reutilización mediante propiedades, mientras que las páginas manejan
+los estados de carga, éxito, error y datos de formulario.
+
+---
 
 ## Equipo y Distribución de Roles
 
@@ -155,9 +104,10 @@ Los scripts del módulo PL/SQL y su orden de ejecución están documentados en [
 | **Luis Fermín**  | **Formularios, API & Persistencia** | Modelamiento de captura de antecedentes, validaciones de formularios de postulación interna/externa, endpoints de solicitudes y estructuración de base de datos relacional. |
 | **Raúl Ferrini**  | **Frontend & UI/UX** | Diseño de interfaz en React + Vite con identidad visual de AquaChile, experiencia de usuario responsiva, integración de video corporativo y layout de vistas principales. |
 
+
 ## Tareas Pendientes y Próximos Pasos
 
-- [ ] **Base de Datos Relacional:** Implementar el esquema relacional definitivo (PostgreSQL / Oracle) reemplazando la persistencia temporal en disco/memoria.
+- [x] **Base de Datos MongoDB:** Persistencia de postulaciones, evaluaciones, auditoría y currículums mediante MongoDB Atlas y GridFS.
 - [ ] **Bandeja de Gestión Interna (Dashboard RRHH):** Visualización tabular de candidatos con filtros avanzados por centro de cultivo, localidad, turno y analista asignado.
 - [ ] **Pipeline de Estados:** Gestión del ciclo de vida del candidato (*Postulado → En Revisión → Citado → Evaluado → Apto/No Apto*).
 - [ ] **Módulo Psicolaboral del Evaluador:** Conectar el pre-filtro de compatibilidad del CV con la cabina de entrevista del psicólogo.
@@ -166,6 +116,54 @@ Los scripts del módulo PL/SQL y su orden de ejecución están documentados en [
 
 ---
 
-## Módulo de Base de Datos
+## Puesta en marcha local
+
+Copia `.env.example` a `.env` y configura allí tu conexión privada de Atlas. Para probar sin Atlas, usa `AQUACHILE_DB_MODE=sqlite`. No publiques `.env`.
+
+### Requisitos
+- Node.js 22.12 o superior
+- Python (v3.10+)
+
+### 1. Iniciar el Frontend
+```bash
+npm install
+npm run dev
+```
+La aplicación abrirá en: `http://localhost:5173/`
+
+### 2. Iniciar el Backend & Servicios
+```bash
+cd backend
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+python -m uvicorn api.app:app --host 127.0.0.1 --port 8000 --reload
+```
+API y documentación Swagger en: `http://127.0.0.1:8000/docs`
+
+La configuración recomendada utiliza MongoDB Atlas. El modo SQLite se conserva
+únicamente para que la demostración local funcione sin Internet. Consulta
+`backend/README.md` para configurar la cadena privada de conexión.
+
+### 3. Probar el flujo completo
+
+1. Abre `http://localhost:5173/postulacion`, completa el formulario y adjunta un CV.
+2. Entra a `http://localhost:5173/acceso-interno`.
+3. Usa `rrhh@aquachile.demo` / `AquaChile2026`.
+4. Revisa la postulación y registra el resultado de la evaluación.
+
+### 4. Ejecutar pruebas frontend
+
+```bash
+npm test
+npm run test:coverage
+```
+
+La suite incluye pruebas del layout compartido, navegación, formularios y validaciones con Vitest, React Testing Library y mocks de la API.
+El alcance y los resultados esperados están documentados en
+`docs/COBERTURA_TESTING.md`.
 
 El directorio `database/` contiene la implementación PL/SQL de Oracle Database para la lógica transaccional y la auditoría del ciclo de vida de postulaciones y evaluaciones. Incluye el trigger de auditoría, el paquete de gestión de evaluaciones, el esquema y casos de prueba. La descripción detallada se mantiene en [`database/README.md`](database/README.md).
+
+
+La API incluida usa MongoDB o SQLite. Los scripts Oracle se conservan como módulo académico independiente; no hay sincronización automática entre Oracle y MongoDB.

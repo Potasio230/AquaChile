@@ -5,12 +5,12 @@ import ChatWidget from '../components/ChatWidget'
 import useSmoothScroll from '../hooks/useSmoothScroll'
 import './AppLayout.css'
 
-function AppLayout() {
+function PublicLayout() {
   useSmoothScroll()
 
   return (
     <div className="app-layout">
-      <Navbar />
+      <Navbar variant="public" />
       <main className="layout-main">
         <Outlet />
       </main>
@@ -20,4 +20,5 @@ function AppLayout() {
   )
 }
 
-export default AppLayout
+export default PublicLayout
+

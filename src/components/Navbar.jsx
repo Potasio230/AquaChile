@@ -2,11 +2,12 @@ import { useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import logo from '../../assets/logo.png'
 
-function Navbar() {
+function Navbar({ variant = 'public' }) {
   const [menuOpen, setMenuOpen] = useState(false)
   const [navHidden, setNavHidden] = useState(false)
   const location = useLocation()
   const isHome = location.pathname === '/'
+  const isInternal = variant === 'internal'
 
   useEffect(() => {
     let lastScrollTop = 0
@@ -27,7 +28,8 @@ function Navbar() {
   const headerClasses = [
     'site-header',
     navHidden ? 'hidden' : '',
-    !isHome ? 'solid' : '',
+    !isHome || isInternal ? 'solid' : '',
+    isInternal ? 'internal-nav' : '',
   ].filter(Boolean).join(' ')
 
   return (
@@ -46,15 +48,19 @@ function Navbar() {
         <span />
       </button>
       <nav className={menuOpen ? 'open' : ''} aria-label="Navegación principal">
-        <Link to="/">Inicio</Link>
-        {isHome ? (
-          <a href="#proceso">Proceso</a>
+        {isInternal ? (
+          <>
+            <Link to="/gestion">Bandeja de postulantes</Link>
+            <Link to="/">Volver al portal</Link>
+          </>
         ) : (
-          <Link to="/#proceso">Proceso</Link>
+          <>
+            <Link to="/">Inicio</Link>
+            {isHome ? <a href="#proceso">Proceso</a> : <Link to="/#proceso">Proceso</Link>}
+            <Link className="nav-cta" to="/postulacion">Nueva evaluación</Link>
+            <Link to="/acceso-interno">Acceso interno</Link>
+          </>
         )}
-        <Link className="nav-cta" to="/postulacion">
-          Nueva evaluación
-        </Link>
       </nav>
     </header>
   )

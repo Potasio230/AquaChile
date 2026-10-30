@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react'
 import '@testing-library/jest-dom/vitest'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
 import { describe, expect, it, vi } from 'vitest'
-import AppLayout from './AppLayout'
+import PublicLayout from './PublicLayout'
 
 vi.mock('../components/Navbar', () => ({
   default: () => <header>Nav AquaChile</header>,
@@ -18,12 +18,12 @@ vi.mock('../components/ChatWidget', () => ({
 
 vi.mock('../hooks/useSmoothScroll', () => ({ default: () => {} }))
 
-describe('AppLayout', () => {
+describe('PublicLayout', () => {
   it('muestra los elementos compartidos y la página dentro de Outlet', () => {
     render(
       <MemoryRouter initialEntries={['/prueba']}>
         <Routes>
-          <Route element={<AppLayout />}>
+          <Route element={<PublicLayout />}>
             <Route path="/prueba" element={<p>Contenido de prueba</p>} />
           </Route>
         </Routes>
