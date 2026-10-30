@@ -48,20 +48,6 @@ function HomePage() {
           <p>
             Esta solicitud reúne los antecedentes necesarios para preparar la evaluación y activar el flujo automatizado del equipo de Reclutamiento y Selección.
           </p>
-          <div className="steps">
-            <div>
-              <strong>01</strong>
-              <span>Completa los antecedentes</span>
-            </div>
-            <div>
-              <strong>02</strong>
-              <span>Adjunta el currículum</span>
-            </div>
-            <div>
-              <strong>03</strong>
-              <span>Envía la solicitud</span>
-            </div>
-          </div>
           <div style={{ marginTop: '32px' }}>
             <Link className="primary-button" to="/postulacion">
               Ir al formulario de evaluación

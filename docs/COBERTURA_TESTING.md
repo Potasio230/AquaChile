@@ -29,10 +29,14 @@ postulación e inicio de sesión. Las respuestas del backend se simulan mediante
 | 8 | Ruta protegida | Navegación | Redirige al login cuando no existe sesión |
 | 9 | Postulación externa | Integración frontend | Usa una API simulada y muestra código de seguimiento |
 | 10 | Inicio de sesión | Integración frontend | Usa una API simulada, guarda el token y navega a gestión |
+| 11 | Layout público compartido | Componente | Conserva navegación, contenido, footer y asistente |
+| 12 | Ruta inexistente | Integración de rutas | Muestra la página 404 y permite volver al inicio |
+| 13 | Evaluación interna protegida | Integración de rutas | Redirige al login usando el enrutador completo |
 
 ## Alcance de cobertura
 
-Resultado verificado de la ejecución actual:
+Resultado verificado después de integrar main: 13 pruebas aprobadas en 5 archivos.
+Los porcentajes corresponden únicamente a los módulos incluidos en la configuración:
 
 | Métrica | Cobertura |
 |---|---:|
