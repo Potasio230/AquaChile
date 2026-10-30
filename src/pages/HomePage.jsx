@@ -42,8 +42,8 @@ function HomePage() {
         <div className="salmon-visual">
           <img src={salmon} alt="Salmón AquaChile" />
         </div>
-        <div className="process-copy" style={{ textAlign: 'center' }}>
-          <h2>La información correcta, desde el primer paso.</h2>
+        <div className="process-copy">
+          <h2>¿Cómo funciona?</h2>
           <p>
             Esta solicitud reúne los antecedentes necesarios para preparar la evaluación y activar el flujo automatizado del equipo de Reclutamiento y Selección.
           </p>

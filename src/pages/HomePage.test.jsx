@@ -43,7 +43,7 @@ describe('HomePage', () => {
   it('muestra el título y el párrafo de la sección ¿Cómo funciona?', () => {
     renderHomePage()
     expect(
-      screen.getByRole('heading', { level: 2, name: /la información correcta/i }),
+      screen.getByRole('heading', { level: 2, name: /¿cómo funciona\?/i }),
     ).toBeInTheDocument()
     expect(screen.getByText(/reúne los antecedentes necesarios/i)).toBeInTheDocument()
   })

@@ -1,7 +1,14 @@
 node_modules/
 dist/
+coverage/
 .env
 .DS_Store
+backend/.venv/
+__pycache__/
+*.py[cod]
+backend/data/*.db
+backend/uploads/*
+!backend/uploads/.gitkeep
 
 # Scripts auxiliares locales
 capturar_screenshots.py

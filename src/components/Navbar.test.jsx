@@ -42,4 +42,15 @@ describe('Navbar', () => {
     expect(screen.getByRole('heading', { name: 'Formulario de postulación' })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: 'Nueva evaluación' })).toHaveAttribute('aria-current', 'page')
   })
+
+  it('no muestra un enlace a la bandeja interna desde la pantalla de acceso', () => {
+    render(
+      <MemoryRouter initialEntries={['/acceso-interno']}>
+        <Navbar variant="internal" />
+      </MemoryRouter>,
+    )
+
+    expect(screen.queryByRole('link', { name: 'Bandeja de postulantes' })).not.toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'Volver al portal' })).toHaveAttribute('href', '/')
+  })
 })
