@@ -5,7 +5,7 @@
 Validar con Vitest y React Testing Library la lógica principal del MVP frontend:
 validaciones, propiedades, estados, manipulación del DOM, navegación protegida,
 postulación e inicio de sesión. Las respuestas del backend se simulan mediante
-`vi.mock`, por lo que las pruebas no requieren Oracle ni FastAPI en ejecución.
+`vi.mock`, por lo que las pruebas no requieren MongoDB ni FastAPI en ejecución.
 
 ## Herramientas
 

@@ -5,15 +5,18 @@ desplegarse. Conserva SQLite únicamente como respaldo local sin Internet.
 
 ## Inicio en Windows (PowerShell)
 
-```bash
+```powershell
 Copy-Item .env.example .env
 # En .env, usa AQUACHILE_DB_MODE=sqlite para iniciar sin MongoDB Atlas.
 python -m venv backend/.venv
 backend/.venv/Scripts/python -m pip install -r backend/requirements.txt
-backend/.venv/Scripts/python -m uvicorn api.app:app --app-dir backend --reload --port 8000
+backend/.venv/Scripts/python -m uvicorn api.app:app --app-dir backend --reload --port 8001
 ```
 
-Documentación de la API: `http://127.0.0.1:8000/docs`
+Documentación de la API: `http://127.0.0.1:8001/docs`
+
+El frontend de desarrollo (Vite) redirige `/api` a este puerto. Si cambiás el
+puerto del backend, actualizá `VITE_API_PROXY_TARGET` en `.env`.
 
 Ejecuta estos comandos desde la carpeta raíz del repositorio. El archivo `.env`
 se lee desde esa carpeta.
@@ -26,7 +29,7 @@ cp .env.example .env
 python3 -m venv backend/.venv
 source backend/.venv/bin/activate
 pip install -r backend/requirements.txt
-python -m uvicorn api.app:app --app-dir backend --reload --port 8000
+python -m uvicorn api.app:app --app-dir backend --reload --port 8001
 ```
 
 ## Configuración MongoDB Atlas
@@ -36,7 +39,7 @@ python -m uvicorn api.app:app --app-dir backend --reload --port 8000
 3. Autoriza la dirección IP del backend desplegado.
 4. Copia `.env.example` como `.env` en la raíz del repositorio.
 5. Reemplaza `MONGODB_URI` con la cadena entregada por Atlas y configura `AQUACHILE_DB_MODE=mongodb`.
-6. No compartas ni subas `.env` a GitHub.
+6. No publiques `.env` en repositorios públicos: contiene credenciales. Usa una contraseña de aplicación exclusiva y revócala si se filtra.
 
 Al iniciar la API se crean automáticamente las colecciones `usuarios`,
 `postulaciones`, `auditorias`, `curriculums.files` y `curriculums.chunks`, junto
@@ -72,7 +75,8 @@ INTERNAL_APP_URL=http://localhost:5173
 
 Para Gmail utiliza una contraseña de aplicación, no la contraseña normal de la
 cuenta. En otros proveedores, reemplaza host, puerto y seguridad según sus datos
-SMTP. No subas `.env` a GitHub. Si SMTP está incompleto o falla, la postulación
+SMTP. Si el repositorio es público, no publiques `SMTP_PASSWORD`: usa una
+contraseña de aplicación exclusiva y revócala si se filtra. Si SMTP está incompleto o falla, la postulación
 se conserva en la base de datos y el formulario informa que el correo no se envió.
 
 ## Pruebas del backend

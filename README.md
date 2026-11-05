@@ -9,7 +9,7 @@
 ![Plataforma](https://img.shields.io/badge/Plataforma-Web-0A6E83?style=for-the-badge)
 ![React](https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react&logoColor=black)
 ![Vite](https://img.shields.io/badge/Vite-Frontend-646CFF?style=for-the-badge&logo=vite&logoColor=white)
-![Oracle](https://img.shields.io/badge/Base%20de%20datos-Oracle-F80000?style=for-the-badge&logo=oracle&logoColor=white)
+![MongoDB](https://img.shields.io/badge/Base%20de%20datos-MongoDB%20%2F%20SQLite-47A248?style=for-the-badge&logo=mongodb&logoColor=white)
 ![Estado](https://img.shields.io/badge/Estado-Prototipo-yellow?style=for-the-badge)
 
 </div>
@@ -28,7 +28,6 @@
 - Datos ficticios precargables para probar visualmente el formulario.
 - Asistente Salmón con preguntas frecuentes y conexión opcional al servicio de chat.
 - Plantillas HTML de notificación para candidato y analista.
-- Scripts PL/SQL para el esquema de evaluación, auditoría y gestión de estados.
 
 ## Vistas de la Plataforma
 
@@ -96,29 +95,29 @@ los estados de carga, éxito, error y datos de formulario.
 
 ---
 
-## Equipo y Distribución de Roles
+## Equipo
 
-| Integrante | Rol Principal | Responsabilidades |
-|---|---|---|
-| **Benjamín Agüero**  | **Backend, IA & Notificaciones** | Arquitectura del servidor (FastAPI), despacho automatizado de correos corporativos HTML (SMTP), lógica del asistente interactivo e integración con el motor de evaluación psicolaboral. |
-| **Luis Fermín**  | **Formularios, API & Persistencia** | Modelamiento de captura de antecedentes, validaciones de formularios de postulación interna/externa, endpoints de solicitudes y estructuración de base de datos relacional. |
-| **Raúl Ferrini**  | **Frontend & UI/UX** | Diseño de interfaz en React + Vite con identidad visual de AquaChile, experiencia de usuario responsiva, integración de video corporativo y layout de vistas principales. |
-
-
-## Tareas Pendientes y Próximos Pasos
-
-- [x] **Base de Datos MongoDB:** Persistencia de postulaciones, evaluaciones, auditoría y currículums mediante MongoDB Atlas y GridFS.
-- [ ] **Bandeja de Gestión Interna (Dashboard RRHH):** Visualización tabular de candidatos con filtros avanzados por centro de cultivo, localidad, turno y analista asignado.
-- [ ] **Pipeline de Estados:** Gestión del ciclo de vida del candidato (*Postulado → En Revisión → Citado → Evaluado → Apto/No Apto*).
-- [ ] **Módulo Psicolaboral del Evaluador:** Conectar el pre-filtro de compatibilidad del CV con la cabina de entrevista del psicólogo.
-- [ ] **Autenticación y Roles:** Control de acceso basado en roles (Candidato externo vs. Analista RRHH vs. Psicólogo evaluador).
-- [ ] **Almacenamiento de Archivos en la Nube:** Migración de almacenamiento de CVs y grabaciones a un almacenamiento de objetos seguro (S3 / Azure Blob).
+- Benjamín Agüero
+- Luis Fermín
+- Raúl Ferrini
 
 ---
 
 ## Puesta en marcha local
 
-Copia `.env.example` a `.env` y configura allí tu conexión privada de Atlas. Para probar sin Atlas, usa `AQUACHILE_DB_MODE=sqlite`. No publiques `.env`.
+El proyecto se configura con un archivo `.env` en la raíz del repositorio. Si no existe, créalo a partir de la plantilla:
+
+Windows (PowerShell):
+```powershell
+Copy-Item .env.example .env
+```
+
+macOS / Linux:
+```bash
+cp .env.example .env
+```
+
+Para la demostración local usa `AQUACHILE_DB_MODE=sqlite` (no requiere Internet ni Atlas). Para MongoDB Atlas, completa `MONGODB_URI` y cambia a `AQUACHILE_DB_MODE=mongodb`.
 
 ### Requisitos
 - Node.js 22.12 o superior
@@ -129,17 +128,26 @@ Copia `.env.example` a `.env` y configura allí tu conexión privada de Atlas. P
 npm install
 npm run dev
 ```
-La aplicación abrirá en: `http://localhost:5173/`
+La aplicación abre en `http://localhost:5173/`. El frontend llama a `/api` en su mismo origen y Vite redirige esas peticiones al backend en `http://127.0.0.1:8001` (ver `vite.config.js`), así que no hace falta configurar CORS en desarrollo. Si el backend corre en otro puerto, define `VITE_API_PROXY_TARGET` en `.env`.
 
 ### 2. Iniciar el Backend & Servicios
-```bash
-cd backend
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-python -m uvicorn api.app:app --host 127.0.0.1 --port 8000 --reload
+
+Windows (PowerShell), desde la raíz del repositorio:
+```powershell
+python -m venv backend/.venv
+backend/.venv/Scripts/python -m pip install -r backend/requirements.txt
+backend/.venv/Scripts/python -m uvicorn api.app:app --app-dir backend --reload --port 8001
 ```
-API y documentación Swagger en: `http://127.0.0.1:8000/docs`
+
+macOS / Linux, desde la raíz del repositorio:
+```bash
+python3 -m venv backend/.venv
+source backend/.venv/bin/activate
+pip install -r backend/requirements.txt
+python -m uvicorn api.app:app --app-dir backend --reload --port 8001
+```
+
+API y documentación Swagger en: `http://127.0.0.1:8001/docs`
 
 La configuración recomendada utiliza MongoDB Atlas. El modo SQLite se conserva
 para que la demostración local funcione sin Internet. Consulta `backend/README.md`
@@ -164,7 +172,4 @@ La suite incluye pruebas del layout compartido, navegación, formularios y valid
 El alcance y los resultados esperados están documentados en
 `docs/COBERTURA_TESTING.md`.
 
-El directorio `database/` contiene la implementación PL/SQL de Oracle Database para la lógica transaccional y la auditoría del ciclo de vida de postulaciones y evaluaciones. Incluye el trigger de auditoría, el paquete de gestión de evaluaciones, el esquema y casos de prueba. La descripción detallada se mantiene en [`database/README.md`](database/README.md).
-
-
-La API incluida usa MongoDB o SQLite. Los scripts Oracle se conservan como módulo académico independiente; no hay sincronización automática entre Oracle y MongoDB.
+La API incluida usa MongoDB o SQLite.
