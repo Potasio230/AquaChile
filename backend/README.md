@@ -52,6 +52,29 @@ Acceso interno de demostración:
 En modo SQLite los datos se crean en `backend/data/aquachile.db` y los CV en
 `backend/uploads/`. Estos archivos están excluidos de Git.
 
+## Envío de correos
+
+El backend envía una confirmación al correo del candidato y una notificación al
+correo del analista indicado en el formulario. La notificación del analista lleva
+el currículum adjunto. Configura estas variables en `.env`:
+
+```dotenv
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_SECURITY=starttls
+SMTP_USER=tu-cuenta@gmail.com
+SMTP_PASSWORD=tu-contraseña-de-aplicación
+SMTP_FROM=tu-cuenta@gmail.com
+SMTP_TIMEOUT_SECONDS=10
+PUBLIC_APP_URL=http://localhost:5173
+INTERNAL_APP_URL=http://localhost:5173
+```
+
+Para Gmail utiliza una contraseña de aplicación, no la contraseña normal de la
+cuenta. En otros proveedores, reemplaza host, puerto y seguridad según sus datos
+SMTP. No subas `.env` a GitHub. Si SMTP está incompleto o falla, la postulación
+se conserva en la base de datos y el formulario informa que el correo no se envió.
+
 ## Pruebas del backend
 
 Desde la raíz del repositorio:

@@ -154,9 +154,15 @@ legend span { display: inline-grid; place-items: center; width: 32px; height: 32
 .field input,.field select,.field textarea { width: 100%; border: 1px solid #c9d8d5; border-radius: 7px; padding: 13px 14px; background: #fbfdfc; color: #12353a; outline: none; }
 .field input:focus,.field select:focus,.field textarea:focus { border-color: var(--teal); box-shadow: 0 0 0 3px rgba(0,114,122,.12); background: white; }
 .field textarea { resize: vertical; min-height: 118px; }
-.field input[type=file]::file-selector-button { border: 0; border-radius: 5px; padding: 9px 12px; margin-right: 12px; background: #dfeeed; color: #004d55; font-weight: 700; }
+.file-picker { position: relative; display: flex; align-items: center; gap: 12px; width: 100%; min-height: 58px; padding: 8px 10px; border: 1px solid #c9d8d5; border-radius: 7px; background: #fbfdfc; }
+.file-picker-input { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; clip-path: inset(50%); border: 0; }
+.file-picker-button { display: inline-flex; flex: 0 0 auto; align-items: center; min-height: 40px; border: 0; border-radius: 5px; padding: 9px 14px; background: #dfeeed; color: #004d55; font-weight: 700; cursor: pointer; transition: filter .18s ease, box-shadow .18s ease; }
+.file-picker:hover .file-picker-button { filter: brightness(1.09); box-shadow: 0 0 0 3px rgba(0,114,122,.12); }
+.file-picker-input:focus-visible + .file-picker-button { outline: 3px solid rgba(0,114,122,.38); outline-offset: 2px; }
+.file-picker-name { overflow-wrap: anywhere; color: #455a5e; font-size: .92rem; font-weight: 400; }
 .form-status { margin-bottom: 22px; border-radius: 7px; padding: 14px 16px; font-weight: 600; }
 .form-status.success { color: #17643a; background: #e5f5eb; }
+.form-status.warning { color: #7a4b00; background: #fff3d6; }
 .form-status.error { color: #9b2c2c; background: #fdecec; }
 .form-status.loading { color: #004d55; background: #e5f2f2; }
 .form-actions { display: flex; justify-content: space-between; align-items: center; gap: 20px; }

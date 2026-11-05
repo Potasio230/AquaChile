@@ -36,7 +36,16 @@ function PostulacionPage() {
       Object.entries(fieldMap).forEach(([key, value]) => data.append(key, value))
       data.append('cv', form.cv)
       const result = await api.createApplication(data)
-      setStatus({ type: 'success', message: `¡Solicitud registrada! Tu código de seguimiento es ${result.codigo}.` })
+      const emailMessage = {
+        enviado: 'Se enviaron los correos de confirmación y aviso al analista.',
+        parcial: 'Solo se pudo enviar uno de los dos correos. El equipo puede revisar la solicitud en el sistema.',
+        fallido: 'No se pudieron enviar los correos. La solicitud quedó guardada en el sistema.',
+        no_configurado: 'El correo aún no está configurado. La solicitud quedó guardada en el sistema.',
+      }[result.notificacion_email] || 'La solicitud quedó guardada en el sistema.'
+      setStatus({
+        type: result.notificacion_email === 'enviado' ? 'success' : 'warning',
+        message: `Solicitud registrada. Código: ${result.codigo}. ${emailMessage}`,
+      })
       setForm(initialApplicationForm)
       formElement.reset()
     } catch (error) {
@@ -132,7 +141,22 @@ function PostulacionPage() {
               <textarea name="observaciones" value={form.observaciones} onChange={update} rows="4" />
             </FormField>
             <FormField label="Currículum del candidato" required hint="Formato PDF o Word. Máximo 10 MB.">
-              <input name="cv" type="file" accept=".pdf,.doc,.docx" onChange={update} required />
+              <span className="file-picker">
+                <input
+                  id="cv-upload"
+                  className="file-picker-input"
+                  name="cv"
+                  type="file"
+                  accept=".pdf,.doc,.docx"
+                  onChange={update}
+                  aria-label="Elegir currículum"
+                  required
+                />
+                <span className="file-picker-button" aria-hidden="true">Elegir archivo</span>
+                <span className="file-picker-name" aria-live="polite">
+                  {form.cv?.name || 'Ningún archivo seleccionado'}
+                </span>
+              </span>
             </FormField>
           </div>
         </fieldset>

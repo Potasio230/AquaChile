@@ -71,7 +71,7 @@ El repositorio incluye plantillas HTML para los mensajes previstos en el flujo:
 - **Frontend:** React 19, Vite, CSS moderno responsivo, Google Fonts (`PT Sans`).
 - **Diseño responsivo:** Bootstrap 5 y estilos propios con identidad AquaChile.
 - **Backend incluido:** FastAPI / Python, con MongoDB Atlas o SQLite local.
-- **Notificaciones:** plantillas HTML en `templates/`; el envío SMTP no está conectado al backend incluido.
+- **Notificaciones:** el backend puede enviar confirmación HTML al candidato y aviso al analista con el CV adjunto mediante SMTP configurable.
 - **Documentos:** carga y descarga autenticada de CVs mediante GridFS en MongoDB.
 - **Asistente:** interfaz de preguntas frecuentes; el servicio de IA externo no forma parte de la API incluida.
 
@@ -142,8 +142,9 @@ python -m uvicorn api.app:app --host 127.0.0.1 --port 8000 --reload
 API y documentación Swagger en: `http://127.0.0.1:8000/docs`
 
 La configuración recomendada utiliza MongoDB Atlas. El modo SQLite se conserva
-únicamente para que la demostración local funcione sin Internet. Consulta
-`backend/README.md` para configurar la cadena privada de conexión.
+para que la demostración local funcione sin Internet. Consulta `backend/README.md`
+para configurar la base de datos y el envío SMTP. Sin credenciales SMTP, las
+postulaciones se guardan normalmente, pero no se envían correos.
 
 ### 3. Probar el flujo completo
 

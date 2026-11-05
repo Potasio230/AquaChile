@@ -7,6 +7,7 @@ function Navbar({ variant = 'public' }) {
   const [navHidden, setNavHidden] = useState(false)
   const location = useLocation()
   const isHome = location.pathname === '/'
+  const isApplicationForm = location.pathname === '/postulacion'
   const isInternal = variant === 'internal'
   const isLogin = location.pathname === '/acceso-interno'
 
@@ -29,7 +30,7 @@ function Navbar({ variant = 'public' }) {
   const headerClasses = [
     'site-header',
     navHidden ? 'hidden' : '',
-    !isHome || isInternal ? 'solid' : '',
+    (!isHome && !isApplicationForm) || isInternal ? 'solid' : '',
     isInternal ? 'internal-nav' : '',
   ].filter(Boolean).join(' ')
 

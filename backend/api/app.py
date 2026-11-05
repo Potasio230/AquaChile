@@ -10,6 +10,7 @@ from fastapi.responses import Response
 from pydantic import BaseModel
 
 from .repository import create_repository
+from .email_service import send_application_notifications
 
 
 load_dotenv(Path(__file__).resolve().parents[2] / ".env")
@@ -120,7 +121,13 @@ def create_application(
         "cv_referencia": cv_reference,
     }
     application_id = repository.create_application(record)
-    return {"id": application_id, "codigo": code, "mensaje": "Postulación registrada correctamente"}
+    email_status = send_application_notifications(record, content, cv.content_type)
+    return {
+        "id": application_id,
+        "codigo": code,
+        "mensaje": "Postulación registrada correctamente",
+        "notificacion_email": email_status["estado"],
+    }
 
 
 @app.get("/api/postulaciones")
