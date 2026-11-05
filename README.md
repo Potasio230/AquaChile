@@ -9,7 +9,7 @@
 ![Plataforma](https://img.shields.io/badge/Plataforma-Web-0A6E83?style=for-the-badge)
 ![React](https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react&logoColor=black)
 ![Vite](https://img.shields.io/badge/Vite-Frontend-646CFF?style=for-the-badge&logo=vite&logoColor=white)
-![MongoDB](https://img.shields.io/badge/Base%20de%20datos-MongoDB%20%2F%20SQLite-47A248?style=for-the-badge&logo=mongodb&logoColor=white)
+![MongoDB](https://img.shields.io/badge/Base%20de%20datos-MongoDB%20%7C%20SQLite-47A248?style=for-the-badge&logo=mongodb&logoColor=white)
 ![Estado](https://img.shields.io/badge/Estado-Prototipo-yellow?style=for-the-badge)
 
 </div>
