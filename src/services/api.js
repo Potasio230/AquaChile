@@ -1,4 +1,7 @@
-const API_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000/api'
+// En desarrollo se usa el proxy de Vite (/api); en producción, la URL configurada.
+const API_URL = import.meta.env.DEV
+  ? '/api'
+  : (import.meta.env.VITE_API_URL || 'http://127.0.0.1:8001/api')
 
 async function request(path, options = {}) {
   const token = sessionStorage.getItem('aquachile-token')
