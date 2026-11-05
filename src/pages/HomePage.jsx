@@ -43,7 +43,8 @@ function HomePage() {
           <img src={salmon} alt="Salmón AquaChile" />
         </div>
         <div className="process-copy">
-          <h2>¿Cómo funciona?</h2>
+          <span className="section-kicker">Un proceso conectado</span>
+          <h2>La información correcta, desde el primer paso.</h2>
           <p>
             Esta solicitud reúne los antecedentes necesarios para preparar la evaluación y activar el flujo automatizado del equipo de Reclutamiento y Selección.
           </p>
