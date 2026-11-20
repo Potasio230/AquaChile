@@ -3,6 +3,8 @@ import { Link, useParams } from 'react-router-dom'
 import { api } from '../services/api'
 import FormField from '../components/FormField'
 import FormStatus from '../components/FormStatus'
+import InterviewScheduler from '../components/InterviewScheduler'
+import { descargarCurriculum } from '../services/googleDriveService'
 import { evaluationStates } from '../data/evaluationOptions'
 
 function EvaluacionPage() {
@@ -36,7 +38,7 @@ function EvaluacionPage() {
   const downloadCv = async () => {
     setStatus({ type: 'loading', message: 'Preparando currículum…' })
     try {
-      const file = await api.downloadCv(id)
+      const file = await descargarCurriculum(id)
       const url = URL.createObjectURL(file)
       const link = document.createElement('a')
       link.href = url
@@ -73,6 +75,7 @@ function EvaluacionPage() {
                   <div>
                     <dt>Currículum</dt>
                     <dd>
+                      <p>{application.cv_drive ? 'Almacenado en Google Drive (privado)' : 'Archivo anterior: almacenamiento original'}</p>
                       <button className="cv-download-button" type="button" onClick={downloadCv} disabled={status.type === 'loading'}>
                         Descargar {application.cv_nombre}
                       </button>
@@ -90,6 +93,7 @@ function EvaluacionPage() {
                 <button className="submit-button" disabled={status.type === 'loading'}>{status.type === 'loading' ? 'Guardando…' : 'Guardar evaluación'}</button>
               </form>
             </div>
+            <InterviewScheduler key={id} applicationId={id} calendar={application.calendar} />
           </>
         )}
       </div>

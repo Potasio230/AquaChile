@@ -70,6 +70,10 @@ def init_database():
                 fecha_evento TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
                 FOREIGN KEY (id_postulacion) REFERENCES postulacion(id_postulacion)
             );
+            CREATE TABLE IF NOT EXISTS calendario (
+                id_postulacion INTEGER PRIMARY KEY REFERENCES postulacion(id_postulacion),
+                datos TEXT NOT NULL
+            );
             """
         )
         db.execute(

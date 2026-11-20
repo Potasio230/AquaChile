@@ -1,4 +1,5 @@
 import os
+import json
 import re
 from datetime import datetime, timezone
 from pathlib import Path
@@ -69,7 +70,7 @@ class SQLiteRepository:
                     record["telefono"], record["cargo"], record["familia_cargo"],
                     record["centro_trabajo"], record["localidad"], record["area"], record["turno"],
                     record["analista"], record["correo_analista"], record["fecha_informe"],
-                    record["observaciones"], record["cv_nombre"], record["cv_referencia"],
+                    record["observaciones"], record["cv_nombre"], json.dumps(record["cv_referencia"]) if isinstance(record["cv_referencia"], dict) else record["cv_referencia"],
                 ),
             )
             application_id = cursor.lastrowid
@@ -99,7 +100,21 @@ class SQLiteRepository:
             return None
         with connect() as db:
             row = db.execute("SELECT * FROM postulacion WHERE id_postulacion = ?", (numeric_id,)).fetchone()
-        return dict(row) if row else None
+            calendar = db.execute('SELECT datos FROM calendario WHERE id_postulacion = ?', (numeric_id,)).fetchone()
+        if not row:
+            return None
+        result = dict(row)
+        if (result.get('cv_ruta') or '').startswith('{'):
+            result['cv_drive'] = json.loads(result['cv_ruta'])
+        if calendar:
+            result['calendar'] = json.loads(calendar['datos'])
+        return result
+
+    def save_calendar(self, application_id, event, user_email):
+        with connect() as db:
+            db.execute('INSERT INTO calendario (id_postulacion, datos) VALUES (?, ?) ON CONFLICT(id_postulacion) DO UPDATE SET datos=excluded.datos',
+                       (int(application_id), json.dumps({**event, 'usuario': user_email})))
+        return True
 
     def update_evaluation(self, application_id, status, result, notes, user_email):
         try:
@@ -131,6 +146,9 @@ class SQLiteRepository:
 
     def get_cv(self, application_id):
         record = self.get_application(application_id)
+        if record and record.get('cv_drive'):
+            from .google_services import download_cv
+            return record['cv_nombre'], record['cv_drive']['mime'], download_cv(record['cv_drive'])
         if not record or not record.get("cv_ruta"):
             return None
         path = Path(record["cv_ruta"])
@@ -194,7 +212,7 @@ class MongoRepository:
         cv_reference = record.pop("cv_referencia")
         document = {
             **record,
-            "cv_file_id": ObjectId(cv_reference),
+            **({'cv_drive': cv_reference} if isinstance(cv_reference, dict) else {'cv_file_id': ObjectId(cv_reference)}),
             "estado": "POSTULADO",
             "resultado": None,
             "nota_evaluacion": None,
@@ -251,11 +269,21 @@ class MongoRepository:
     def get_cv(self, application_id):
         if not ObjectId.is_valid(application_id):
             return None
-        record = self.db.postulaciones.find_one({"_id": ObjectId(application_id)}, {"cv_file_id": 1, "cv_nombre": 1})
+        record = self.db.postulaciones.find_one({"_id": ObjectId(application_id)}, {"cv_file_id": 1, "cv_nombre": 1, "cv_drive": 1})
+        if record and record.get('cv_drive'):
+            from .google_services import download_cv
+            return record['cv_nombre'], record['cv_drive']['mime'], download_cv(record['cv_drive'])
         if not record or not record.get("cv_file_id"):
             return None
         stored = self.files.get(record["cv_file_id"])
         return record["cv_nombre"], stored.content_type or "application/octet-stream", stored.read()
+
+
+    def save_calendar(self, application_id, event, user_email):
+        return self.db.postulaciones.update_one(
+            {'_id': ObjectId(application_id)},
+            {'$set': {'calendar': {**event, 'usuario': user_email}, 'fecha_actualizacion': datetime.now(timezone.utc)}}
+        ).matched_count == 1
 
 
 def create_repository():

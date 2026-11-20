@@ -2,15 +2,19 @@ import os
 import secrets
 from datetime import datetime, timezone
 from pathlib import Path
+from urllib.parse import quote
+from io import BytesIO
+from zipfile import ZipFile, BadZipFile
 
 from dotenv import load_dotenv
 from fastapi import FastAPI, File, Form, Header, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import Response
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 from .repository import create_repository
 from .email_service import send_application_notifications
+from . import google_services
 
 
 load_dotenv(Path(__file__).resolve().parents[2] / ".env")
@@ -44,12 +48,19 @@ class EvaluacionRequest(BaseModel):
     nota_evaluacion: str | None = None
 
 
+class CitaRequest(BaseModel):
+    inicio: datetime
+    duracion_minutos: int = Field(default=60, ge=15, le=180)
+
+
 def require_user(authorization: str | None):
     if not authorization or not authorization.startswith("Bearer "):
         raise HTTPException(status_code=401, detail="Debes iniciar sesión")
     user = TOKENS.get(authorization.removeprefix("Bearer "))
     if not user:
         raise HTTPException(status_code=401, detail="La sesión expiró")
+    if user.get('rol') not in {'ADMIN', 'ANALISTA', 'PSICOLOGO'}:
+        raise HTTPException(status_code=403, detail='No tienes permisos para esta función interna')
     return user
 
 
@@ -99,8 +110,27 @@ def create_application(
     if len(content) > MAX_CV_SIZE:
         raise HTTPException(status_code=400, detail="El CV supera el máximo de 10 MB")
 
-    code = f"AQ-{datetime.now(timezone.utc):%Y%m%d}-{secrets.token_hex(3).upper()}"
-    cv_reference = repository.save_cv(code, cv.filename, cv.content_type, content)
+    if not nombre.strip() or len(nombre.strip()) > 150 or not content:
+        raise HTTPException(422, 'Indica un nombre válido y un CV no vacío')
+    mime = {'.pdf': 'application/pdf', '.doc': 'application/msword',
+            '.docx': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'}[extension]
+    valid_file = content.startswith(b'%PDF-') if extension == '.pdf' else content.startswith(bytes.fromhex('D0CF11E0A1B11AE1'))
+    if extension == '.docx':
+        try:
+            with ZipFile(BytesIO(content)) as archive:
+                valid_file = 'word/document.xml' in archive.namelist() and '[Content_Types].xml' in archive.namelist()
+        except BadZipFile:
+            valid_file = False
+    if not valid_file:
+        raise HTTPException(400, 'El contenido del archivo no corresponde a PDF o Word')
+    filename = Path(cv.filename.replace('\\', '/')).name
+    filename = ''.join(c for c in filename if ord(c) >= 32)[:180]
+    code = f"AQ-{datetime.now(timezone.utc):%Y%m%d}-{secrets.token_hex(8).upper()}"
+    storage = os.getenv('CV_STORAGE', 'drive').lower()
+    if storage not in {'drive', 'legacy'}:
+        raise HTTPException(503, 'CV_STORAGE debe ser drive o legacy')
+    cv_reference = (google_services.upload_cv(code, nombre.strip(), filename, mime, content)
+                    if storage == 'drive' else repository.save_cv(code, filename, mime, content))
     record = {
         "codigo": code,
         "rut": rut.strip(),
@@ -117,10 +147,14 @@ def create_application(
         "correo_analista": correo_analista,
         "fecha_informe": fecha_informe,
         "observaciones": observaciones,
-        "cv_nombre": cv.filename,
+        "cv_nombre": filename,
         "cv_referencia": cv_reference,
     }
-    application_id = repository.create_application(record)
+    try:
+        application_id = repository.create_application(record)
+    except Exception:
+        # A DB timeout may have committed the record: preserve the private CV for recovery.
+        raise HTTPException(503, f'No se pudo confirmar el registro. Solicita revisión con el código {code} antes de reenviar.') from None
     email_status = send_application_notifications(record, content, cv.content_type)
     return {
         "id": application_id,
@@ -155,7 +189,7 @@ def download_cv(application_id: str, authorization: str | None = Header(default=
     return Response(
         content=content,
         media_type=content_type,
-        headers={"Content-Disposition": f'attachment; filename="{filename}"'},
+        headers={"Content-Disposition": f"attachment; filename*=UTF-8''{quote(filename, safe='')}"},
     )
 
 
@@ -181,4 +215,26 @@ def update_evaluation(
 def dashboard_summary(authorization: str | None = Header(default=None)):
     require_user(authorization)
     return repository.summary()
+
+
+@app.get('/api/integraciones/google')
+def google_configuration(authorization: str | None = Header(default=None)):
+    require_user(authorization)
+    return {'credenciales_presentes': google_services.credentials_path().is_file(),
+            'almacenamiento_nuevos_cv': os.getenv('CV_STORAGE', 'drive')}
+
+
+@app.post('/api/postulaciones/{application_id}/entrevista')
+def schedule_interview(application_id: str, payload: CitaRequest, authorization: str | None = Header(default=None)):
+    user = require_user(authorization)
+    record = repository.get_application(application_id)
+    if not record:
+        raise HTTPException(404, 'Postulación no encontrada')
+    event = google_services.calendar_event(record, payload.inicio, payload.duracion_minutos)
+    try:
+        if not repository.save_calendar(application_id, event, user['email']):
+            raise ValueError('Postulación no disponible')
+    except Exception:
+        raise HTTPException(503, 'Google guardó la cita pero no se confirmó en la base. Reintenta con la misma fecha; no se duplicará el evento.') from None
+    return {'mensaje': 'Entrevista guardada en Google Calendar', 'calendar': event}
 
