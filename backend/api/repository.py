@@ -80,6 +80,23 @@ class SQLiteRepository:
             db.commit()
         return str(application_id)
 
+    def create_analyst_request(self, record):
+        with connect() as db:
+            cursor = db.execute(
+                """
+                INSERT INTO solicitudes_evaluacion (
+                    familia_cargo, area, turno, fecha_informe, analista, correo_analista
+                ) VALUES (?, ?, ?, ?, ?, ?)
+                """,
+                (
+                    record["familia_cargo"], record["area"], record["turno"],
+                    record["fecha_informe"], record["analista"], record["correo_analista"],
+                ),
+            )
+            request_id = cursor.lastrowid
+            db.commit()
+        return str(request_id)
+
     def list_applications(self):
         with connect() as db:
             rows = db.execute(
@@ -209,6 +226,11 @@ class MongoRepository:
             "usuario": "FORMULARIO_PUBLICO",
             "fecha_evento": now,
         })
+        return str(result.inserted_id)
+
+    def create_analyst_request(self, record):
+        document = {**record, "fecha_registro": datetime.now(timezone.utc)}
+        result = self.db.solicitudes_evaluacion.insert_one(document)
         return str(result.inserted_id)
 
     def list_applications(self):

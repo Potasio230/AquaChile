@@ -44,6 +44,15 @@ class EvaluacionRequest(BaseModel):
     nota_evaluacion: str | None = None
 
 
+class AnalistaRequest(BaseModel):
+    familia_cargo: str
+    area: str
+    turno: str
+    fecha_informe: str
+    analista: str
+    correo_analista: str
+
+
 def require_user(authorization: str | None):
     if not authorization or not authorization.startswith("Bearer "):
         raise HTTPException(status_code=401, detail="Debes iniciar sesión")
@@ -86,8 +95,8 @@ def create_application(
     localidad: str = Form(...),
     area: str = Form(...),
     turno: str = Form(...),
-    analista: str = Form(...),
-    correo_analista: str = Form(...),
+    analista: str = Form(""),
+    correo_analista: str = Form(""),
     fecha_informe: str = Form(...),
     observaciones: str = Form(""),
     cv: UploadFile = File(...),
@@ -127,6 +136,22 @@ def create_application(
         "codigo": code,
         "mensaje": "Postulación registrada correctamente",
         "notificacion_email": email_status["estado"],
+    }
+
+
+@app.post("/api/analistas", status_code=201)
+def create_analyst_request(payload: AnalistaRequest):
+    request_id = repository.create_analyst_request({
+        "familia_cargo": payload.familia_cargo.strip(),
+        "area": payload.area.strip(),
+        "turno": payload.turno.strip(),
+        "fecha_informe": payload.fecha_informe.strip(),
+        "analista": payload.analista.strip(),
+        "correo_analista": payload.correo_analista.strip(),
+    })
+    return {
+        "id": request_id,
+        "mensaje": "Datos del analista registrados correctamente",
     }
 
 

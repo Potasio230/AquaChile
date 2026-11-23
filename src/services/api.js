@@ -33,6 +33,7 @@ async function download(path) {
 export const api = {
   login: (credentials) => request('/auth/login', { method: 'POST', body: JSON.stringify(credentials) }),
   createApplication: (formData) => request('/postulaciones', { method: 'POST', body: formData }),
+  createAnalystRequest: (values) => request('/analistas', { method: 'POST', body: JSON.stringify(values) }),
   listApplications: () => request('/postulaciones'),
   getApplication: (id) => request(`/postulaciones/${id}`),
   downloadCv: (id) => download(`/postulaciones/${id}/cv`),
