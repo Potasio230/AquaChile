@@ -42,8 +42,8 @@ python -m uvicorn api.app:app --app-dir backend --reload --port 8001
 6. No publiques `.env` en repositorios públicos: contiene credenciales. Usa una contraseña de aplicación exclusiva y revócala si se filtra.
 
 Al iniciar la API se crean automáticamente las colecciones `usuarios`,
-`postulaciones`, `auditorias`, `curriculums.files` y `curriculums.chunks`, junto
-con sus índices. Los currículums se guardan usando GridFS. Las contraseñas se
+`postulaciones`, `auditorias`, `solicitudes_evaluacion`, `curriculums.files` y
+`curriculums.chunks`, junto con sus índices. Los currículums se guardan usando GridFS. Las contraseñas se
 almacenan con PBKDF2; las credenciales previas en texto plano se migran al hash
 correcto cuando el usuario inicia sesión correctamente.
 
@@ -59,25 +59,23 @@ En modo SQLite los datos se crean en `backend/data/aquachile.db` y los CV en
 
 El backend envía una confirmación al correo del candidato y una notificación al
 correo del analista indicado en el formulario. La notificación del analista lleva
-el currículum adjunto. Configura estas variables en `.env`:
+el currículum adjunto. Los mensajes se envían mediante la API REST de Resend.
+Configura estas variables en `.env`:
 
 ```dotenv
-SMTP_HOST=smtp.gmail.com
-SMTP_PORT=587
-SMTP_SECURITY=starttls
-SMTP_USER=tu-cuenta@gmail.com
-SMTP_PASSWORD=tu-contraseña-de-aplicación
-SMTP_FROM=tu-cuenta@gmail.com
-SMTP_TIMEOUT_SECONDS=10
+RESEND_API_KEY=re_TU_CLAVE_AQUI
+RESEND_FROM=AquaChile <onboarding@resend.dev>
+RESEND_TIMEOUT_SECONDS=10
 PUBLIC_APP_URL=http://localhost:5173
 INTERNAL_APP_URL=http://localhost:5173
 ```
 
-Para Gmail utiliza una contraseña de aplicación, no la contraseña normal de la
-cuenta. En otros proveedores, reemplaza host, puerto y seguridad según sus datos
-SMTP. Si el repositorio es público, no publiques `SMTP_PASSWORD`: usa una
-contraseña de aplicación exclusiva y revócala si se filtra. Si SMTP está incompleto o falla, la postulación
-se conserva en la base de datos y el formulario informa que el correo no se envió.
+En modo prueba, `onboarding@resend.dev` solo puede enviar a los correos
+verificados en tu cuenta de Resend. Para usar tu propio dominio, verifícalo en
+Resend y cambia `RESEND_FROM`. No publiques `RESEND_API_KEY` en un repositorio
+público: revócala si se filtra. Si Resend no está configurado o falla, la
+postulación se conserva en la base de datos y el formulario informa que el correo
+no se envió.
 
 ## Pruebas del backend
 

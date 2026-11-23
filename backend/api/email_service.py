@@ -1,39 +1,24 @@
+import base64
+import json
 import logging
-import mimetypes
 import os
-import smtplib
-import ssl
-from email.message import EmailMessage
+import urllib.error
+import urllib.request
 from html import escape
 from pathlib import Path
 
 
 logger = logging.getLogger(__name__)
 TEMPLATES_DIR = Path(__file__).resolve().parents[2] / "templates"
+RESEND_API_URL = "https://api.resend.com/emails"
 
 
-def _smtp_config():
-    host = os.getenv("SMTP_HOST", "").strip()
-    username = os.getenv("SMTP_USER", "").strip()
-    # Google muestra las contraseñas de aplicación agrupadas; los espacios no forman parte de la clave.
-    password = "".join(os.getenv("SMTP_PASSWORD", "").split())
-    sender = os.getenv("SMTP_FROM", username).strip()
-    if not all((host, username, password, sender)):
+def _config():
+    api_key = os.getenv("RESEND_API_KEY", "").strip()
+    sender = os.getenv("RESEND_FROM", "AquaChile <onboarding@resend.dev>").strip()
+    if not api_key or not sender:
         return None
-    try:
-        port = int(os.getenv("SMTP_PORT", "587"))
-        timeout = float(os.getenv("SMTP_TIMEOUT_SECONDS", "10"))
-    except ValueError:
-        logger.warning("Configuración SMTP inválida: puerto o tiempo de espera no numérico")
-        return None
-    if not 1 <= port <= 65535 or timeout <= 0:
-        logger.warning("Configuración SMTP inválida: puerto o tiempo de espera fuera de rango")
-        return None
-    security = os.getenv("SMTP_SECURITY", "starttls").strip().lower()
-    if security not in {"starttls", "ssl"}:
-        logger.warning("SMTP_SECURITY debe ser starttls o ssl")
-        return None
-    return host, port, username, password, sender, timeout, security
+    return api_key, sender
 
 
 def _render_template(filename, values):
@@ -43,46 +28,41 @@ def _render_template(filename, values):
     return content
 
 
-def _send_message(config, message):
-    host, port, username, password, _sender, timeout, security = config
-    context = ssl.create_default_context()
-    if security == "ssl":
-        with smtplib.SMTP_SSL(host, port, timeout=timeout, context=context) as server:
-            server.login(username, password)
-            server.send_message(message)
-    else:
-        with smtplib.SMTP(host, port, timeout=timeout) as server:
-            server.ehlo()
-            server.starttls(context=context)
-            server.ehlo()
-            server.login(username, password)
-            server.send_message(message)
-
-
-def _message(config, recipient, subject, html_body, text_body, attachment=None):
-    message = EmailMessage()
-    message["From"] = config[4]
-    message["To"] = recipient
-    message["Subject"] = subject
-    message.set_content(text_body)
-    message.add_alternative(html_body, subtype="html")
+def _send_email(config, recipient, subject, html_body, text_body, attachment=None):
+    """Envía un correo usando la API REST de Resend."""
+    api_key, sender = config
+    payload = {
+        "from": sender,
+        "to": [recipient],
+        "subject": subject,
+        "html": html_body,
+        "text": text_body,
+    }
     if attachment:
         filename, content_type, content = attachment
-        main_type, _, sub_type = content_type.partition("/")
-        if not sub_type:
-            main_type, sub_type = "application", "octet-stream"
-        message.add_attachment(
-            content,
-            maintype=main_type,
-            subtype=sub_type,
-            filename=Path(filename).name,
-        )
-    return message
+        payload["attachments"] = [{
+            "filename": Path(filename).name,
+            "content": base64.b64encode(content).decode("ascii"),
+            "content_type": content_type or "application/octet-stream",
+        }]
+
+    request = urllib.request.Request(
+        RESEND_API_URL,
+        data=json.dumps(payload).encode("utf-8"),
+        headers={
+            "Authorization": f"Bearer {api_key}",
+            "Content-Type": "application/json",
+        },
+        method="POST",
+    )
+    timeout = float(os.getenv("RESEND_TIMEOUT_SECONDS", "10"))
+    with urllib.request.urlopen(request, timeout=timeout) as response:
+        response.read()
 
 
 def send_application_notifications(record, cv_content, cv_content_type=None):
     """Send candidate confirmation and analyst notification independently."""
-    config = _smtp_config()
+    config = _config()
     if not config:
         return {"estado": "no_configurado", "candidato": False, "analista": False}
 
@@ -111,7 +91,7 @@ def send_application_notifications(record, cv_content, cv_content_type=None):
         "url_dashboard": f"{dashboard_url}/gestion",
     }
 
-    notifications = (
+    notifications = [
         (
             "candidato",
             record["email"],
@@ -121,25 +101,33 @@ def send_application_notifications(record, cv_content, cv_content_type=None):
             f"Hola {record['nombre_completo']}, recibimos tu postulación. Código: {record['codigo']}.",
             None,
         ),
-        (
-            "analista",
-            record["correo_analista"],
-            f"Nueva postulación · {record['codigo']}",
-            "email_analista.html",
-            analyst_values,
-            f"Se recibió una postulación de {record['nombre_completo']}. Código: {record['codigo']}.",
-            (record["cv_nombre"], cv_content_type or "application/octet-stream", cv_content),
-        ),
-    )
+    ]
+    if record.get("correo_analista"):
+        notifications.append(
+            (
+                "analista",
+                record["correo_analista"],
+                f"Nueva postulación · {record['codigo']}",
+                "email_analista.html",
+                analyst_values,
+                f"Se recibió una postulación de {record['nombre_completo']}. Código: {record['codigo']}.",
+                (record["cv_nombre"], cv_content_type or "application/octet-stream", cv_content),
+            )
+        )
 
-    sent = {"candidato": False, "analista": False}
+    sent = {}
     for key, recipient, subject, template, values, text_body, attachment in notifications:
         try:
-            html_body = _render_template(template, values)
-            message = _message(config, recipient, subject, html_body, text_body, attachment)
-            _send_message(config, message)
+            _send_email(
+                config,
+                recipient,
+                subject,
+                _render_template(template, values),
+                text_body,
+                attachment,
+            )
             sent[key] = True
-        except (OSError, smtplib.SMTPException, ValueError) as error:
+        except (OSError, ValueError) as error:
             logger.warning("No se pudo enviar la notificación de %s: %s", key, error)
 
     if all(sent.values()):

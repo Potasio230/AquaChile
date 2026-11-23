@@ -15,7 +15,8 @@
     "bootstrap": "^5.3.8",
     "react": "latest",
     "react-dom": "latest",
-    "react-router-dom": "^7.18.4"
+    "react-router-dom": "^7.18.4",
+    "resend": "^6.39.0"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^7.0.1",

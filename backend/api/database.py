@@ -61,6 +61,17 @@ def init_database():
                 fecha_actualizacion TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
             );
 
+            CREATE TABLE IF NOT EXISTS solicitudes_evaluacion (
+                id_solicitud INTEGER PRIMARY KEY AUTOINCREMENT,
+                familia_cargo TEXT NOT NULL,
+                area TEXT NOT NULL,
+                turno TEXT NOT NULL,
+                fecha_informe TEXT NOT NULL,
+                analista TEXT NOT NULL,
+                correo_analista TEXT NOT NULL,
+                fecha_registro TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+            );
+
             CREATE TABLE IF NOT EXISTS auditoria (
                 id_auditoria INTEGER PRIMARY KEY AUTOINCREMENT,
                 id_postulacion INTEGER NOT NULL,

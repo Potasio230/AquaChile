@@ -1,9 +1,31 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
+import { enviarPostulacion } from '../services/resendService'
 import heroPoster from '../../assets/Cultivos.jpg'
 import heroVideo from '../../assets/BackgroundAquaChile.mp4'
 import salmon from '../../assets/Salmón.png'
 
 function HomePage() {
+  const [enviando, setEnviando] = useState(false)
+  const [mensaje, setMensaje] = useState(null)
+
+  const handleEnviarCorreo = async () => {
+    setEnviando(true)
+    setMensaje(null)
+    try {
+      const { data, error } = await enviarPostulacion()
+      if (error) {
+        setMensaje({ tipo: 'error', texto: `Error al enviar: ${error.message || JSON.stringify(error)}` })
+      } else {
+        setMensaje({ tipo: 'success', texto: '¡Correo de prueba enviado con éxito vía Resend!' })
+      }
+    } catch (err) {
+      setMensaje({ tipo: 'error', texto: `Error: ${err.message}` })
+    } finally {
+      setEnviando(false)
+    }
+  }
+
   return (
     <>
       <section className="hero" id="inicio">
@@ -16,9 +38,34 @@ function HomePage() {
           <p>
             Centralizamos la solicitud de evaluaciones psicolaborales para acompañar cada proceso con precisión, seguridad y cercanía.
           </p>
-          <Link className="primary-button" to="/postulacion">
-            Iniciar una solicitud
-          </Link>
+          <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap', alignItems: 'center' }}>
+            <Link className="primary-button" to="/postulacion">
+              Iniciar una solicitud
+            </Link>
+            <button
+              type="button"
+              className="primary-button"
+              style={{ background: '#0a3d62', borderColor: '#0a3d62' }}
+              onClick={handleEnviarCorreo}
+              disabled={enviando}
+            >
+              {enviando ? 'Enviando correo...' : 'Probar envío con Resend'}
+            </button>
+          </div>
+          {mensaje && (
+            <div
+              style={{
+                marginTop: '1rem',
+                padding: '0.75rem 1rem',
+                borderRadius: '8px',
+                backgroundColor: mensaje.tipo === 'success' ? '#d4edda' : '#f8d7da',
+                color: mensaje.tipo === 'success' ? '#155724' : '#721c24',
+                fontSize: '0.9rem',
+              }}
+            >
+              {mensaje.texto}
+            </div>
+          )}
         </div>
         <a className="scroll-indicator" href="#proceso" aria-label="Continuar al contenido">
           <svg

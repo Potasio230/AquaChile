@@ -123,6 +123,7 @@ h1 { margin: 18px 0 24px; font-size: clamp(3rem,6vw,5.7rem); line-height: .98; l
 .form-heading .section-kicker { color: #38bdf8; font-weight: 700; text-shadow: 0 2px 6px rgba(0,0,0,0.6); }
 .form-heading h2 { margin-inline: auto; color: #FFFFFF; text-shadow: 0 2px 12px rgba(0,0,0,0.7); }
 .form-heading p { color: #E0F2FE; line-height: 1.7; text-shadow: 0 2px 6px rgba(0,0,0,0.6); }
+.form-heading--spaced { margin-top: clamp(40px, 6vw, 72px); }
 .demo-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 16px; }
 .demo-actions>span { align-self: center; color: #e0f2fe; font-size: .82rem; font-weight: 700; text-shadow: 0 2px 6px rgba(0,0,0,.6); }
 .demo-button { border: 1px solid rgba(255,255,255,.55); border-radius: 5px; padding: 8px 14px; background: rgba(255,255,255,.14); color: white; font-size: .78rem; font-weight: 700; cursor: pointer; }
@@ -152,7 +153,17 @@ legend span { display: inline-grid; place-items: center; width: 32px; height: 32
 .field b,.form-actions b { color: var(--orange); }
 .field small { color: #455a5e; font-weight: 400; }
 .field input,.field select,.field textarea { width: 100%; border: 1px solid #c9d8d5; border-radius: 7px; padding: 13px 14px; background: #fbfdfc; color: #12353a; outline: none; }
-.field input:focus,.field select:focus,.field textarea:focus { border-color: var(--teal); box-shadow: 0 0 0 3px rgba(0,114,122,.12); background: white; }
+.field input:focus,.field select:focus,.field textarea:focus { border-color: var(--teal); box-shadow: 0 0 0 3px rgba(0,114,122,.12); background-color: white; }
+.field select {
+  appearance: none;
+  -webkit-appearance: none;
+  padding-right: 44px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%2300727a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  background-size: 12px 8px;
+  cursor: pointer;
+}
 .field textarea { resize: vertical; min-height: 118px; }
 .file-picker { position: relative; display: flex; align-items: center; gap: 12px; width: 100%; min-height: 58px; padding: 8px 10px; border: 1px solid #c9d8d5; border-radius: 7px; background: #fbfdfc; }
 .file-picker-input { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; clip-path: inset(50%); border: 0; }
